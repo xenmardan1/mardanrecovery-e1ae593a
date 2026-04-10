@@ -1,8 +1,6 @@
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { useEffect, useRef } from "react";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-
-// Fix default marker icon
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
@@ -21,7 +19,57 @@ interface LocationMapProps {
 }
 
 const LocationMap = ({ latitude, longitude, name, reference }: LocationMapProps) => {
-  if (!latitude || !longitude) {
+  const mapElementRef = useRef<HTMLDivElement | null>(null);
+  const mapInstanceRef = useRef<L.Map | null>(null);
+  const markerRef = useRef<L.Marker | null>(null);
+
+  useEffect(() => {
+    if (!mapElementRef.current || !Number.isFinite(latitude) || !Number.isFinite(longitude)) {
+      return;
+    }
+
+    if (!mapInstanceRef.current) {
+      mapInstanceRef.current = L.map(mapElementRef.current, {
+        zoomControl: true,
+      });
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      }).addTo(mapInstanceRef.current);
+    }
+
+    const position: L.LatLngExpression = [latitude, longitude];
+    mapInstanceRef.current.setView(position, 15);
+
+    if (!markerRef.current) {
+      markerRef.current = L.marker(position).addTo(mapInstanceRef.current);
+    } else {
+      markerRef.current.setLatLng(position);
+    }
+
+    const popupContent = document.createElement("div");
+    const title = document.createElement("strong");
+    title.textContent = name || "Reference";
+    popupContent.appendChild(title);
+    popupContent.appendChild(document.createElement("br"));
+    popupContent.appendChild(document.createTextNode(`Ref: ${reference}`));
+    markerRef.current.bindPopup(popupContent);
+
+    requestAnimationFrame(() => {
+      mapInstanceRef.current?.invalidateSize();
+    });
+  }, [latitude, longitude, name, reference]);
+
+  useEffect(() => {
+    return () => {
+      markerRef.current?.remove();
+      mapInstanceRef.current?.remove();
+      markerRef.current = null;
+      mapInstanceRef.current = null;
+    };
+  }, []);
+
+  if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
     return (
       <div className="rounded-lg border border-border bg-muted p-8 text-center text-muted-foreground">
         No location data available for this reference.
@@ -33,24 +81,7 @@ const LocationMap = ({ latitude, longitude, name, reference }: LocationMapProps)
     <div className="space-y-2">
       <h3 className="text-lg font-semibold text-foreground">Location</h3>
       <div className="rounded-lg overflow-hidden border border-border" style={{ height: 350 }}>
-        <MapContainer
-          center={[latitude, longitude]}
-          zoom={15}
-          style={{ height: "100%", width: "100%" }}
-          key={`${latitude}-${longitude}`}
-        >
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-          <Marker position={[latitude, longitude]}>
-            <Popup>
-              <strong>{name}</strong>
-              <br />
-              Ref: {reference}
-            </Popup>
-          </Marker>
-        </MapContainer>
+        <div ref={mapElementRef} className="h-full w-full" />
       </div>
     </div>
   );
