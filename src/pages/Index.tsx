@@ -52,7 +52,12 @@ const Index = () => {
     setLoading(true);
     let query = supabase.from(TABLE_NAME).select("*");
     keys.forEach((key) => {
-      query = query.eq(key, newFilters[key]);
+      const values = newFilters[key];
+      if (values.length === 1) {
+        query = query.eq(key, values[0]);
+      } else {
+        query = query.in(key, values);
+      }
     });
     query = query.limit(100);
 
