@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import pescoLogo from "@/assets/pesco-logo.png";
 import { supabase } from "@/lib/supabase";
 import SearchBar from "@/components/SearchBar";
 import FilterBar, { Filters } from "@/components/FilterBar";
@@ -91,13 +92,16 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-card sticky top-0 z-10">
-        <div className="px-4 py-3">
-          <h1 className="text-lg font-bold text-foreground">
-            PESCO Arrear List — Mardan
-          </h1>
-          <p className="text-xs text-muted-foreground">
-            Search by Reference or filter by columns
-          </p>
+        <div className="px-4 py-3 flex items-center gap-3">
+          <img src={pescoLogo} alt="PESCO Logo" className="h-10 w-10 rounded-full object-contain" />
+          <div>
+            <h1 className="text-lg font-bold text-foreground">
+              PESCO Arrear List — Mardan
+            </h1>
+            <p className="text-xs text-muted-foreground">
+              Search by Reference or filter by columns
+            </p>
+          </div>
         </div>
       </header>
 
