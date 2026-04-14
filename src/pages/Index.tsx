@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import pescoLogo from "@/assets/pesco-logo.png";
 import { supabase } from "@/lib/supabase";
 import SearchBar from "@/components/SearchBar";
 import FilterBar, { Filters } from "@/components/FilterBar";
