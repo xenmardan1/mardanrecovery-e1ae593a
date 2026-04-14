@@ -2,10 +2,10 @@ import { useState, useCallback } from "react";
 import { supabase } from "@/lib/supabase";
 import SearchBar from "@/components/SearchBar";
 import RecordDetails from "@/components/RecordDetails";
-import PaymentUpdate from "@/components/PaymentUpdate";
-import PictureUpload from "@/components/PictureUpload";
-import LocationMap from "@/components/LocationMap";
+import PaymentAndUpload from "@/components/PaymentAndUpload";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { MapPin } from "lucide-react";
 import { toast } from "sonner";
 
 const TABLE_NAME = "PESCO ARREAR LIST MARDAN";
@@ -38,66 +38,68 @@ const Index = () => {
     if (record?.Reference) handleSearch(record.Reference);
   }, [record, handleSearch]);
 
+  const openMap = () => {
+    if (!record) return;
+    const lat = record.Latitude;
+    const lng = record.Longitude;
+    if (!lat || !lng) {
+      toast.error("No location data available for this record");
+      return;
+    }
+    window.open(
+      `https://www.google.com/maps?q=${lat},${lng}`,
+      "_blank"
+    );
+  };
+
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border bg-card">
-        <div className="container mx-auto px-4 py-4">
-          <h1 className="text-2xl font-bold text-foreground">
+      <header className="border-b border-border bg-card sticky top-0 z-10">
+        <div className="px-4 py-3">
+          <h1 className="text-lg font-bold text-foreground">
             PESCO Arrear List — Mardan
           </h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Search by Reference to view, update payment, upload picture & view location
+          <p className="text-xs text-muted-foreground">
+            Search by Reference to view & update records
           </p>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-6 space-y-6 max-w-5xl">
-        {/* Search */}
+      <main className="px-3 py-4 space-y-4 max-w-2xl mx-auto">
         <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Reference Search</CardTitle>
-          </CardHeader>
-          <CardContent>
+          <CardContent className="pt-4 pb-3">
             <SearchBar onSearch={handleSearch} loading={loading} />
           </CardContent>
         </Card>
 
         {record && (
           <>
-            {/* Record Details */}
             <Card>
-              <CardHeader>
-                <CardTitle className="text-base">Consumer Details</CardTitle>
+              <CardHeader className="pb-2 px-4 pt-4">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-sm">Consumer Details</CardTitle>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={openMap}
+                    className="h-8 text-xs"
+                  >
+                    <MapPin className="mr-1 h-3.5 w-3.5" />
+                    View on Map
+                  </Button>
+                </div>
               </CardHeader>
-              <CardContent>
+              <CardContent className="px-4 pb-4">
                 <RecordDetails record={record} />
               </CardContent>
             </Card>
 
-            {/* Payment Update */}
             <Card>
-              <CardContent className="pt-6">
-                <PaymentUpdate record={record} onUpdated={refreshRecord} />
-              </CardContent>
-            </Card>
-
-            {/* Picture Upload */}
-            <Card>
-              <CardContent className="pt-6">
-                <PictureUpload reference={record.Reference} />
-              </CardContent>
-            </Card>
-
-            {/* Map */}
-            <Card>
-              <CardContent className="pt-6">
-                <LocationMap
-                  latitude={parseFloat(record.Latitude)}
-                  longitude={parseFloat(record.Longitude)}
-                  name={record.Name}
-                  reference={record.Reference}
-                />
+              <CardHeader className="pb-2 px-4 pt-4">
+                <CardTitle className="text-sm">Update Payment & Picture</CardTitle>
+              </CardHeader>
+              <CardContent className="px-4 pb-4">
+                <PaymentAndUpload record={record} onUpdated={refreshRecord} />
               </CardContent>
             </Card>
           </>

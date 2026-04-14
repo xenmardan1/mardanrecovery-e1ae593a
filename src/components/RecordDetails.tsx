@@ -1,4 +1,3 @@
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 interface RecordDetailsProps {
@@ -25,11 +24,18 @@ const fields = [
 
 const RecordDetails = ({ record }: RecordDetailsProps) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
       {fields.map((f) => (
-        <div key={f.key} className="space-y-1">
-          <Label className="text-xs text-muted-foreground">{f.label}</Label>
-          <Input value={record[f.key] ?? ""} readOnly className="bg-muted" />
+        <div
+          key={f.key}
+          className="flex items-baseline gap-2 py-1.5 px-2 rounded bg-muted/50 text-sm"
+        >
+          <span className="text-xs text-muted-foreground whitespace-nowrap min-w-[80px]">
+            {f.label}:
+          </span>
+          <span className="font-medium text-foreground truncate">
+            {record[f.key] ?? "—"}
+          </span>
         </div>
       ))}
     </div>
