@@ -8,6 +8,7 @@ import PaymentAndUpload from "@/components/PaymentAndUpload";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { MapPin, Download } from "lucide-react";
+import ModifiedDataDownload from "@/components/ModifiedDataDownload";
 import { toast } from "sonner";
 import * as XLSX from "xlsx";
 
@@ -151,6 +152,15 @@ const Index = () => {
               <Download className="mr-1 h-3.5 w-3.5" />
               Download All Records (Excel)
             </Button>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2 px-4 pt-4">
+            <CardTitle className="text-sm">Download Modified Records</CardTitle>
+          </CardHeader>
+          <CardContent className="px-4 pb-4">
+            <ModifiedDataDownload />
           </CardContent>
         </Card>
 
