@@ -10,7 +10,7 @@ const filterColumns = [
   { key: "Sub Division", label: "Sub Division" },
   { key: "Batch", label: "Batch" },
   { key: "Tariff", label: "Tariff" },
-  { key: "Feeder Name", label: "Feeder Name" },
+  { key: "Feeder Number", label: "Feeder Number" },
   { key: "Status", label: "Status" },
 ];
 
