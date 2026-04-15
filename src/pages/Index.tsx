@@ -92,16 +92,14 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-card sticky top-0 z-10">
-        <div className="px-4 py-3 flex items-center gap-3">
-          <img src={pescoLogo} alt="PESCO Logo" className="h-10 w-10 rounded-full object-contain" />
-          <div>
-            <h1 className="text-lg font-bold text-foreground">
-              PESCO Arrear List — Mardan
-            </h1>
-            <p className="text-xs text-muted-foreground">
-              Search by Reference or filter by columns
-            </p>
-          </div>
+        <div className="px-4 py-3 flex flex-col items-center text-center">
+          <img src={pescoLogo} alt="PESCO Logo" className="h-12 w-12 rounded-full object-contain mb-1" />
+          <h1 className="text-lg font-bold text-foreground">
+            PESCO MARDAN CIRCLE ARREARS
+          </h1>
+          <p className="text-xs text-muted-foreground">
+            Search by Reference or filter by columns
+          </p>
         </div>
       </header>
 
