@@ -91,17 +91,15 @@ const Index = () => {
   };
 
   const downloadExcel = useCallback(async () => {
-    if (records.length === 0) {
-      toast.error("No records to download");
-      return;
-    }
+    toast.info("Fetching all records…");
 
-    // If filters are active, fetch ALL matching records (not just 100)
-    let dataToExport = records;
     const keys = Object.keys(filters);
-    if (keys.length > 0) {
-      toast.info("Fetching all matching records…");
-      let query = supabase.from(TABLE_NAME).select("*");
+    const pageSize = 1000;
+    let allData: Record<string, any>[] = [];
+    let from = 0;
+
+    while (true) {
+      let query = supabase.from(TABLE_NAME).select("*").range(from, from + pageSize - 1);
       keys.forEach((key) => {
         const values = filters[key];
         if (values.length === 1) query = query.eq(key, values[0]);
@@ -112,15 +110,23 @@ const Index = () => {
         toast.error("Download failed: " + error.message);
         return;
       }
-      dataToExport = data || [];
+      if (!data || data.length === 0) break;
+      allData = allData.concat(data);
+      if (data.length < pageSize) break;
+      from += pageSize;
     }
 
-    const ws = XLSX.utils.json_to_sheet(dataToExport);
+    if (allData.length === 0) {
+      toast.error("No records to download");
+      return;
+    }
+
+    const ws = XLSX.utils.json_to_sheet(allData);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Arrears");
     XLSX.writeFile(wb, "PESCO_Arrears_Data.xlsx");
-    toast.success(`Downloaded ${dataToExport.length} records`);
-  }, [records, filters]);
+    toast.success(`Downloaded ${allData.length} records`);
+  }, [filters]);
 
   return (
     <div className="min-h-screen bg-background">
