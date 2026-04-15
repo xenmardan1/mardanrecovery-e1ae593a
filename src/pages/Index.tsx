@@ -147,9 +147,15 @@ const Index = () => {
         {records.length > 1 && !selectedRecord && (
           <Card>
             <CardHeader className="pb-2 px-4 pt-4">
-              <CardTitle className="text-sm">
-                Results ({records.length})
-              </CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-sm">
+                  Results ({records.length})
+                </CardTitle>
+                <Button variant="outline" size="sm" onClick={downloadExcel} className="h-8 text-xs">
+                  <Download className="mr-1 h-3.5 w-3.5" />
+                  Download Excel
+                </Button>
+              </div>
             </CardHeader>
             <CardContent className="px-4 pb-4">
               <div className="space-y-1.5 max-h-60 overflow-y-auto">
