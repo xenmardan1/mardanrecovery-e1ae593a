@@ -132,9 +132,13 @@ const PaymentAndUpload = ({ record, onUpdated }: Props) => {
         </div>
       )}
 
-      <Button onClick={handleSave} disabled={saving} className="w-full">
+      <Button
+        onClick={handleSave}
+        disabled={saving || !!(record.payment && String(record.payment).trim() !== "")}
+        className="w-full"
+      >
         <Save className="mr-2 h-4 w-4" />
-        {saving ? "Saving..." : "Save All"}
+        {saving ? "Saving..." : record.payment && String(record.payment).trim() !== "" ? "Already Modified" : "Save All"}
       </Button>
     </div>
   );
