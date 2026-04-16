@@ -106,11 +106,8 @@ const PaymentAndUpload = ({ record, onUpdated }: Props) => {
               <SelectValue placeholder="Select mode" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="Cash">Cash</SelectItem>
-              <SelectItem value="Bank Transfer">Bank Transfer</SelectItem>
-              <SelectItem value="Cheque">Cheque</SelectItem>
-              <SelectItem value="Online">Online</SelectItem>
-              <SelectItem value="Mobile Wallet">Mobile Wallet</SelectItem>
+              <SelectItem value="Full Payment">Full Payment</SelectItem>
+              <SelectItem value="Partial Payment">Partial Payment</SelectItem>
             </SelectContent>
           </Select>
         </div>
