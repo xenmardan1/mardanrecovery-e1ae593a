@@ -131,37 +131,39 @@ const Index = () => {
   }, [filters]);
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b border-border bg-card sticky top-0 z-10">
-        <div className="px-4 py-3 flex flex-col items-center text-center relative">
-          <div className="absolute right-3 top-3">
+    <div className="min-h-screen bg-background transition-colors duration-300">
+      <header className="header-gradient sticky top-0 z-10 shadow-lg">
+        <div className="px-4 py-4 flex flex-col items-center text-center relative">
+          <div className="absolute right-3 top-3 flex items-center">
             <ThemeToggle />
           </div>
-          <img src={pescoLogo} alt="PESCO Logo" className="h-12 w-12 rounded-full object-contain mb-1" />
-          <h1 className="text-lg font-bold text-foreground">
+          <div className="h-14 w-14 rounded-full bg-white/20 backdrop-blur-sm p-1 mb-2 shadow-md">
+            <img src={pescoLogo} alt="PESCO Logo" className="h-full w-full rounded-full object-contain" />
+          </div>
+          <h1 className="text-lg font-bold text-white drop-shadow-sm">
             PESCO MARDAN CIRCLE ARREARS
           </h1>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs text-white/80">
             Search by Reference or filter by columns
           </p>
         </div>
       </header>
 
       <main className="px-3 py-4 space-y-3 max-w-2xl mx-auto">
-        <Card>
+        <Card className="shadow-md border-0 bg-card/80 backdrop-blur-sm">
           <CardContent className="pt-4 pb-3 space-y-3">
             <SearchBar onSearch={handleSearch} loading={loading} />
             <FilterBar filters={filters} onFiltersChange={handleFilterChange} />
-            <Button variant="outline" size="sm" onClick={downloadExcel} className="w-full h-8 text-xs">
+            <Button variant="outline" size="sm" onClick={downloadExcel} className="w-full h-8 text-xs border-primary/30 hover:bg-primary/10 hover:text-primary transition-all">
               <Download className="mr-1 h-3.5 w-3.5" />
               Download All Records (Excel)
             </Button>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="shadow-md border-0 bg-card/80 backdrop-blur-sm">
           <CardHeader className="pb-2 px-4 pt-4">
-            <CardTitle className="text-sm">Download Modified Records</CardTitle>
+            <CardTitle className="text-sm text-primary font-semibold">Download Modified Records</CardTitle>
           </CardHeader>
           <CardContent className="px-4 pb-4">
             <ModifiedDataDownload />
@@ -169,13 +171,13 @@ const Index = () => {
         </Card>
 
         {records.length > 1 && !selectedRecord && (
-          <Card>
+          <Card className="shadow-md border-0 bg-card/80 backdrop-blur-sm">
             <CardHeader className="pb-2 px-4 pt-4">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-sm">
+                <CardTitle className="text-sm text-primary font-semibold">
                   Results ({records.length})
                 </CardTitle>
-                <Button variant="outline" size="sm" onClick={downloadExcel} className="h-8 text-xs">
+                <Button variant="outline" size="sm" onClick={downloadExcel} className="h-8 text-xs border-primary/30 hover:bg-primary/10">
                   <Download className="mr-1 h-3.5 w-3.5" />
                   Download Excel
                 </Button>
@@ -187,7 +189,7 @@ const Index = () => {
                   <button
                     key={i}
                     onClick={() => setSelectedRecord(r)}
-                    className="w-full text-left px-3 py-2 rounded-md text-xs bg-muted/50 hover:bg-accent transition-colors flex justify-between items-center"
+                    className="w-full text-left px-3 py-2 rounded-lg text-xs bg-accent/50 hover:bg-primary/10 hover:shadow-sm transition-all flex justify-between items-center border border-transparent hover:border-primary/20"
                   >
                     <span className="font-medium text-foreground">{r.Reference}</span>
                     <span className="text-muted-foreground truncate ml-2">{r.Name}</span>
@@ -211,15 +213,15 @@ const Index = () => {
               </Button>
             )}
 
-            <Card>
+            <Card className="shadow-md border-0 bg-card/80 backdrop-blur-sm">
               <CardHeader className="pb-2 px-4 pt-4">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm">Consumer Details</CardTitle>
+                  <CardTitle className="text-sm text-primary font-semibold">Consumer Details</CardTitle>
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={openMap}
-                    className="h-8 text-xs"
+                    className="h-8 text-xs border-primary/30 hover:bg-primary/10"
                   >
                     <MapPin className="mr-1 h-3.5 w-3.5" />
                     View on Map
@@ -231,9 +233,9 @@ const Index = () => {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="shadow-md border-0 bg-card/80 backdrop-blur-sm">
               <CardHeader className="pb-2 px-4 pt-4">
-                <CardTitle className="text-sm">Update Payment & Picture</CardTitle>
+                <CardTitle className="text-sm text-primary font-semibold">Update Payment & Picture</CardTitle>
               </CardHeader>
               <CardContent className="px-4 pb-4">
                 <PaymentAndUpload record={selectedRecord} onUpdated={refreshRecord} />
