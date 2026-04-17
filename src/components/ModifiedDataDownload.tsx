@@ -186,7 +186,7 @@ const ModifiedDataDownload = () => {
         className="w-full h-8 text-xs"
       >
         <Download className="mr-1 h-3.5 w-3.5" />
-        {downloading ? "Downloading..." : "Download Modified Data (ZIP)"}
+        {downloading ? "Downloading..." : "Download Recovery Progress (ZIP)"}
       </Button>
     </div>
   );

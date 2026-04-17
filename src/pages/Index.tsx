@@ -156,7 +156,7 @@ const Index = () => {
             <FilterBar filters={filters} onFiltersChange={handleFilterChange} />
             <Button variant="outline" size="sm" onClick={downloadExcel} className="w-full h-8 text-xs border-primary/30 hover:bg-primary/10 hover:text-primary transition-all">
               <Download className="mr-1 h-3.5 w-3.5" />
-              Download All Records (Excel)
+              Download Selected Arrears Lists (Excel)
             </Button>
           </CardContent>
         </Card>
