@@ -11,7 +11,8 @@ import {
 } from "@/components/ui/select";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
-import { Save, Upload, Image } from "lucide-react";
+import { Save, Upload, Image, ZoomIn, ZoomOut, X } from "lucide-react";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
 interface Props {
   record: Record<string, any>;
