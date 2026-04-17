@@ -244,6 +244,10 @@ const Index = () => {
           </>
         )}
       </main>
+
+      <footer className="mt-6 py-4 text-center text-xs text-muted-foreground border-t border-border/50">
+        Designed By Engr. Inayatullah
+      </footer>
     </div>
   );
 };
