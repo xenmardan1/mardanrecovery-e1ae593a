@@ -141,7 +141,7 @@ const Index = () => {
             <img src={pescoLogo} alt="PESCO Logo" className="h-full w-full rounded-full object-contain" />
           </div>
           <h1 className="text-lg font-bold text-white drop-shadow-sm">
-            PESCO MARDAN CIRCLE ARREARS
+            PESCO MARDAN CIRCLE RECOVERY APP
           </h1>
           <p className="text-xs text-white/80">
             Search by Reference or filter by columns
