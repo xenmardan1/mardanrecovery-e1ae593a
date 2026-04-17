@@ -37,19 +37,31 @@ const PaymentAndUpload = ({ record, onUpdated }: Props) => {
     setFile(null);
   }, [record.Reference]);
 
-  // Load existing image
+  // Load existing image — try common extensions
   useEffect(() => {
-    const { data } = supabase.storage
-      .from("picture")
-      .getPublicUrl(`${record.Reference}.jpg`);
-    if (data?.publicUrl) {
-      fetch(data.publicUrl, { method: "HEAD" })
-        .then((res) => {
-          if (res.ok) setImageUrl(data.publicUrl);
-          else setImageUrl(null);
-        })
-        .catch(() => setImageUrl(null));
-    }
+    let cancelled = false;
+    setImageUrl(null);
+    const exts = ["jpg", "jpeg", "png", "webp"];
+    (async () => {
+      for (const ext of exts) {
+        const { data } = supabase.storage
+          .from("picture")
+          .getPublicUrl(`${record.Reference}.${ext}`);
+        if (!data?.publicUrl) continue;
+        try {
+          const res = await fetch(data.publicUrl, { method: "HEAD" });
+          if (res.ok) {
+            if (!cancelled) setImageUrl(data.publicUrl);
+            return;
+          }
+        } catch {
+          // try next
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, [record.Reference]);
 
   const handleSave = async () => {
