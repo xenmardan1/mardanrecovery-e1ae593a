@@ -21,48 +21,55 @@ interface FilterBarProps {
   onFiltersChange: (filters: Filters) => void;
 }
 
+const selectCols = filterColumns
+  .map((c) => (c.key.includes(" ") ? `"${c.key}"` : c.key))
+  .join(",");
+
 const FilterBar = ({ filters, onFiltersChange }: FilterBarProps) => {
-  const [options, setOptions] = useState<Record<string, string[]>>({});
+  const [allRows, setAllRows] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
-    const fetchOptions = async () => {
-      const results: Record<string, string[]> = {};
-      await Promise.all(
-        filterColumns.map(async (col) => {
-          // Use quoted column name for columns with spaces
-          const quotedKey = col.key.includes(" ") ? `"${col.key}"` : col.key;
-          // Fetch all rows to get complete unique values
-          let allData: any[] = [];
-          let from = 0;
-          const pageSize = 1000;
-          while (true) {
-            const { data: page } = await supabase
-              .from(TABLE_NAME)
-              .select(quotedKey)
-              .not(col.key, "is", null)
-              .range(from, from + pageSize - 1);
-            if (!page || page.length === 0) break;
-            allData = allData.concat(page);
-            if (page.length < pageSize) break;
-            from += pageSize;
-          }
-          const data = allData;
-
-          if (data) {
-            const unique = [
-              ...new Set(
-                data.map((r: any) => String(r[col.key])).filter(Boolean)
-              ),
-            ].sort();
-            results[col.key] = unique;
-          }
-        })
-      );
-      setOptions(results);
+    const fetchAll = async () => {
+      setLoading(true);
+      let rows: any[] = [];
+      let from = 0;
+      const pageSize = 1000;
+      while (true) {
+        const { data: page } = await supabase
+          .from(TABLE_NAME)
+          .select(selectCols)
+          .range(from, from + pageSize - 1);
+        if (!page || page.length === 0) break;
+        rows = rows.concat(page);
+        if (page.length < pageSize) break;
+        from += pageSize;
+      }
+      setAllRows(rows);
+      setLoading(false);
     };
-    fetchOptions();
+    fetchAll();
   }, []);
+
+  // Compute options per column, applying all OTHER active filters (cascading)
+  const getOptionsFor = (colKey: string): string[] => {
+    const filtered = allRows.filter((row) =>
+      Object.entries(filters).every(([k, vals]) => {
+        if (k === colKey) return true; // exclude self
+        if (!vals || vals.length === 0) return true;
+        return vals.includes(String(row[k]));
+      })
+    );
+    const unique = [
+      ...new Set(
+        filtered
+          .map((r) => (r[colKey] == null ? "" : String(r[colKey])))
+          .filter(Boolean)
+      ),
+    ].sort();
+    return unique;
+  };
 
   const toggleValue = (key: string, value: string) => {
     const current = filters[key] || [];
@@ -105,7 +112,7 @@ const FilterBar = ({ filters, onFiltersChange }: FilterBarProps) => {
         {filterColumns.map((col) => {
           const isOpen = expanded[col.key] || false;
           const selected = filters[col.key] || [];
-          const items = options[col.key] || [];
+          const items = loading ? [] : getOptionsFor(col.key);
 
           return (
             <div key={col.key} className="border border-border rounded-md">
@@ -128,8 +135,10 @@ const FilterBar = ({ filters, onFiltersChange }: FilterBarProps) => {
 
               {isOpen && (
                 <div className="px-3 pb-2 max-h-36 overflow-y-auto space-y-1">
-                  {items.length === 0 ? (
+                  {loading ? (
                     <p className="text-xs text-muted-foreground py-1">Loading...</p>
+                  ) : items.length === 0 ? (
+                    <p className="text-xs text-muted-foreground py-1">No options</p>
                   ) : (
                     items.map((opt) => (
                       <label
