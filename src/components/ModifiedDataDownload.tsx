@@ -7,6 +7,7 @@ import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import * as XLSX from "xlsx";
 import JSZip from "jszip";
+import FilterBar, { Filters } from "@/components/FilterBar";
 
 const TABLE_NAME = "PESCO ARREAR LIST MARDAN";
 const BUCKET = "picture";
@@ -16,6 +17,7 @@ const ModifiedDataDownload = () => {
   const [endDate, setEndDate] = useState("");
   const [downloading, setDownloading] = useState(false);
   const [progress, setProgress] = useState("");
+  const [filters, setFilters] = useState<Filters>({});
 
   const handleDownload = async () => {
     setDownloading(true);
@@ -26,12 +28,20 @@ const ModifiedDataDownload = () => {
       let from = 0;
 
       while (true) {
-        const { data, error } = await supabase
+        let query = supabase
           .from(TABLE_NAME)
           .select("*")
           .not("payment", "is", null)
-          .neq("payment", "")
-          .range(from, from + pageSize - 1);
+          .neq("payment", "");
+
+        // Apply filters
+        Object.entries(filters).forEach(([key, vals]) => {
+          if (vals && vals.length > 0) {
+            query = query.in(key, vals);
+          }
+        });
+
+        const { data, error } = await query.range(from, from + pageSize - 1);
 
         if (error) {
           toast.error("Download failed: " + error.message);
@@ -176,6 +186,9 @@ const ModifiedDataDownload = () => {
           />
         </div>
       </div>
+
+      <FilterBar filters={filters} onFiltersChange={setFilters} />
+
       {progress && (
         <p className="text-xs text-muted-foreground text-center">{progress}</p>
       )}
