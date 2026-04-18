@@ -160,12 +160,12 @@ const PaymentAndUpload = ({ record, onUpdated }: Props) => {
       <Dialog open={zoomOpen} onOpenChange={setZoomOpen}>
         <DialogContent className="max-w-4xl w-[95vw] p-2 sm:p-4">
           <DialogTitle className="sr-only">Picture Preview</DialogTitle>
-          <div className="flex items-center justify-end gap-2 mb-2">
+          <div className="flex items-center justify-center gap-2 mb-2">
             <Button
               size="icon"
               variant="outline"
-              onClick={() => setZoom((z) => Math.max(0.5, z - 0.25))}
-              disabled={zoom <= 0.5}
+              onClick={() => setZoom((z) => Math.max(0.05, +(z - 0.05).toFixed(2)))}
+              disabled={zoom <= 0.05}
             >
               <ZoomOut className="h-4 w-4" />
             </Button>
@@ -175,7 +175,7 @@ const PaymentAndUpload = ({ record, onUpdated }: Props) => {
             <Button
               size="icon"
               variant="outline"
-              onClick={() => setZoom((z) => Math.min(4, z + 0.25))}
+              onClick={() => setZoom((z) => Math.min(4, +(z + 0.05).toFixed(2)))}
               disabled={zoom >= 4}
             >
               <ZoomIn className="h-4 w-4" />
