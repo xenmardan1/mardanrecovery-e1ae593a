@@ -183,8 +183,9 @@ const Index = () => {
           <CardHeader className="pb-2 px-4 pt-4">
             <CardTitle className="text-sm text-primary font-semibold">Download Modified Records</CardTitle>
           </CardHeader>
-          <CardContent className="px-4 pb-4">
+          <CardContent className="px-4 pb-4 space-y-3">
             <ModifiedDataDownload />
+            <SummaryDialog />
           </CardContent>
         </Card>
 
