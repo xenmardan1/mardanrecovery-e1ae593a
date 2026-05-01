@@ -16,7 +16,10 @@ import * as XLSX from "xlsx";
 
 const TABLE_NAME = "PESCO ARREAR LIST MARDAN";
 
+type View = "home" | "arrears" | "recovery" | "theft";
+
 const Index = () => {
+  const [view, setView] = useState<View>("home");
   const [records, setRecords] = useState<Record<string, any>[]>([]);
   const [selectedRecord, setSelectedRecord] = useState<Record<string, any> | null>(null);
   const [loading, setLoading] = useState(false);
