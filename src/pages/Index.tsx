@@ -7,7 +7,7 @@ import RecordDetails from "@/components/RecordDetails";
 import PaymentAndUpload from "@/components/PaymentAndUpload";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MapPin, Download } from "lucide-react";
+import { MapPin, Download, ArrowLeft } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import ModifiedDataDownload from "@/components/ModifiedDataDownload";
 import SummaryDialog from "@/components/SummaryDialog";
