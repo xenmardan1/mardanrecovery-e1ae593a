@@ -113,6 +113,36 @@ const Index = () => {
     window.open(`https://www.google.com/maps?q=${lat},${lng}`, "_blank");
   };
 
+  const displayModified = useCallback(async () => {
+    setLoading(true);
+    setRecords([]);
+    setSelectedRecord(null);
+    const pageSize = 1000;
+    let allData: Record<string, any>[] = [];
+    let from = 0;
+    while (true) {
+      const { data, error } = await supabase
+        .from(TABLE_NAME)
+        .select("*")
+        .not("payment", "is", null)
+        .neq("payment", "")
+        .range(from, from + pageSize - 1);
+      if (error) {
+        toast.error("Fetch failed: " + error.message);
+        setLoading(false);
+        return;
+      }
+      if (!data || data.length === 0) break;
+      allData = allData.concat(data);
+      if (data.length < pageSize) break;
+      from += pageSize;
+    }
+    setRecords(allData);
+    if (allData.length === 0) toast.info("No recovery cases found");
+    else toast.success(`Found ${allData.length} recovery cases`);
+    setLoading(false);
+  }, []);
+
   const downloadExcel = useCallback(async () => {
     toast.info("Fetching all records…");
 
@@ -215,7 +245,7 @@ const Index = () => {
           </Card>
         )}
 
-        {view === "recovery" && !selectedRecord && (
+        {view === "recovery" && !selectedRecord && records.length === 0 && (
           <Card className="shadow-md border-0 bg-card/80 backdrop-blur-sm">
             <CardHeader className="pb-2 px-4 pt-4">
               <CardTitle className="text-sm text-primary font-semibold">Download Modified Records</CardTitle>
@@ -223,11 +253,14 @@ const Index = () => {
             <CardContent className="px-4 pb-4 space-y-3">
               <ModifiedDataDownload />
               <SummaryDialog />
+              <Button variant="outline" size="sm" onClick={displayModified} className="w-full h-8 text-xs border-primary/30 hover:bg-primary/10 hover:text-primary">
+                Display Recovery Cases
+              </Button>
             </CardContent>
           </Card>
         )}
 
-        {view === "theft" && !selectedRecord && (
+        {view === "theft" && !selectedRecord && records.length === 0 && (
           <Card className="shadow-md border-0 bg-card/80 backdrop-blur-sm">
             <CardHeader className="pb-2 px-4 pt-4">
               <CardTitle className="text-sm text-primary font-semibold">Download Theft Cases</CardTitle>
@@ -235,6 +268,47 @@ const Index = () => {
             <CardContent className="px-4 pb-4 space-y-3">
               <ModifiedDataDownload />
               <SummaryDialog />
+              <Button variant="outline" size="sm" onClick={displayModified} className="w-full h-8 text-xs border-primary/30 hover:bg-primary/10 hover:text-primary">
+                Display Theft Cases
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+
+        {(view === "recovery" || view === "theft") && records.length > 0 && !selectedRecord && (
+          <Card className="shadow-md border-0 bg-card/80 backdrop-blur-sm">
+            <CardHeader className="pb-2 px-4 pt-4">
+              <CardTitle className="text-sm text-primary font-semibold">
+                Results ({records.length})
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="px-4 pb-4">
+              <div className="max-h-96 overflow-auto rounded-md border border-border">
+                <table className="w-full text-xs">
+                  <thead className="bg-muted/70 sticky top-0">
+                    <tr className="text-left">
+                      <th className="px-2 py-1.5 font-semibold text-foreground">Reference</th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground">Name</th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground text-right">Arrear</th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground text-right">Age</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {records.map((r, i) => (
+                      <tr
+                        key={i}
+                        onClick={() => setSelectedRecord(r)}
+                        className="cursor-pointer border-t border-border hover:bg-primary/10 transition-colors"
+                      >
+                        <td className="px-2 py-1.5 font-medium text-foreground whitespace-nowrap">{r.Reference}</td>
+                        <td className="px-2 py-1.5 text-muted-foreground truncate max-w-[140px]">{r.Name ?? "—"}</td>
+                        <td className="px-2 py-1.5 text-foreground text-right whitespace-nowrap">{r.ARREAR ?? "—"}</td>
+                        <td className="px-2 py-1.5 text-muted-foreground text-right whitespace-nowrap">{r.AGE ?? "—"}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </CardContent>
           </Card>
         )}
