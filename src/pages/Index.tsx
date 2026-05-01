@@ -174,25 +174,71 @@ const Index = () => {
         <Card className="shadow-md border-0 bg-card/80 backdrop-blur-sm">
           <CardContent className="pt-4 pb-3 space-y-3">
             <SearchBar onSearch={handleSearch} loading={loading} />
-            <FilterBar filters={filters} onFiltersChange={handleFilterChange} />
-            <Button variant="outline" size="sm" onClick={downloadExcel} className="w-full h-8 text-xs border-primary/30 hover:bg-primary/10 hover:text-primary transition-all">
-              <Download className="mr-1 h-3.5 w-3.5" />
-              Download Selected Arrears Lists (Excel)
+          </CardContent>
+        </Card>
+
+        {view === "home" && !selectedRecord && records.length === 0 && (
+          <div className="grid grid-cols-1 gap-2">
+            <Button variant="outline" className="w-full h-10 text-sm border-primary/30 hover:bg-primary/10 hover:text-primary" onClick={() => setView("arrears")}>
+              <Download className="mr-2 h-4 w-4" />
+              Download Arrears List
             </Button>
-          </CardContent>
-        </Card>
+            <Button variant="outline" className="w-full h-10 text-sm border-primary/30 hover:bg-primary/10 hover:text-primary" onClick={() => setView("recovery")}>
+              <Download className="mr-2 h-4 w-4" />
+              Download Recovery
+            </Button>
+            <Button variant="outline" className="w-full h-10 text-sm border-primary/30 hover:bg-primary/10 hover:text-primary" onClick={() => setView("theft")}>
+              <Download className="mr-2 h-4 w-4" />
+              Download Theft Cases
+            </Button>
+          </div>
+        )}
 
-        <Card className="shadow-md border-0 bg-card/80 backdrop-blur-sm">
-          <CardHeader className="pb-2 px-4 pt-4">
-            <CardTitle className="text-sm text-primary font-semibold">Download Modified Records</CardTitle>
-          </CardHeader>
-          <CardContent className="px-4 pb-4 space-y-3">
-            <ModifiedDataDownload />
-            <SummaryDialog />
-          </CardContent>
-        </Card>
+        {view !== "home" && !selectedRecord && (
+          <Button variant="ghost" size="sm" onClick={() => { setView("home"); setRecords([]); setFilters({}); }} className="text-xs h-7">
+            <ArrowLeft className="mr-1 h-3.5 w-3.5" /> Back
+          </Button>
+        )}
 
-        {records.length > 1 && !selectedRecord && (
+        {view === "arrears" && !selectedRecord && (
+          <Card className="shadow-md border-0 bg-card/80 backdrop-blur-sm">
+            <CardHeader className="pb-2 px-4 pt-4">
+              <CardTitle className="text-sm text-primary font-semibold">Download Arrears List</CardTitle>
+            </CardHeader>
+            <CardContent className="px-4 pb-4 space-y-3">
+              <FilterBar filters={filters} onFiltersChange={handleFilterChange} />
+              <Button variant="outline" size="sm" onClick={downloadExcel} className="w-full h-8 text-xs border-primary/30 hover:bg-primary/10 hover:text-primary transition-all">
+                <Download className="mr-1 h-3.5 w-3.5" />
+                Download Selected Arrears Lists (Excel)
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+
+        {view === "recovery" && !selectedRecord && (
+          <Card className="shadow-md border-0 bg-card/80 backdrop-blur-sm">
+            <CardHeader className="pb-2 px-4 pt-4">
+              <CardTitle className="text-sm text-primary font-semibold">Download Modified Records</CardTitle>
+            </CardHeader>
+            <CardContent className="px-4 pb-4 space-y-3">
+              <ModifiedDataDownload />
+              <SummaryDialog />
+            </CardContent>
+          </Card>
+        )}
+
+        {view === "theft" && !selectedRecord && (
+          <Card className="shadow-md border-0 bg-card/80 backdrop-blur-sm">
+            <CardHeader className="pb-2 px-4 pt-4">
+              <CardTitle className="text-sm text-primary font-semibold">Download Theft Cases</CardTitle>
+            </CardHeader>
+            <CardContent className="px-4 pb-4">
+              <p className="text-xs text-muted-foreground text-center py-6">Theft cases download coming soon.</p>
+            </CardContent>
+          </Card>
+        )}
+
+        {view === "arrears" && records.length > 1 && !selectedRecord && (
           <Card className="shadow-md border-0 bg-card/80 backdrop-blur-sm">
             <CardHeader className="pb-2 px-4 pt-4">
               <div className="flex items-center justify-between">
