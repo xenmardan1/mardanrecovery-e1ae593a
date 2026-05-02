@@ -24,6 +24,48 @@ const Index = () => {
   const [selectedRecord, setSelectedRecord] = useState<Record<string, any> | null>(null);
   const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState<Filters>({});
+  const [sortKey, setSortKey] = useState<string | null>(null);
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
+
+  const toggleSort = useCallback((key: string) => {
+    setSortKey((prev) => {
+      if (prev === key) {
+        setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+        return key;
+      }
+      setSortDir("asc");
+      return key;
+    });
+  }, []);
+
+  const sortedRecords = useMemo(() => {
+    if (!sortKey) return records;
+    const numeric = sortKey === "ARREAR" || sortKey === "AGE";
+    const copy = [...records];
+    copy.sort((a, b) => {
+      const av = a[sortKey];
+      const bv = b[sortKey];
+      if (av == null && bv == null) return 0;
+      if (av == null) return 1;
+      if (bv == null) return -1;
+      let cmp: number;
+      if (numeric) {
+        cmp = (parseFloat(String(av).replace(/,/g, "")) || 0) - (parseFloat(String(bv).replace(/,/g, "")) || 0);
+      } else {
+        cmp = String(av).localeCompare(String(bv), undefined, { numeric: true });
+      }
+      return sortDir === "asc" ? cmp : -cmp;
+    });
+    return copy;
+  }, [records, sortKey, sortDir]);
+
+  const SortIcon = ({ col }: { col: string }) => {
+    if (sortKey !== col) return <ArrowUpDown className="inline ml-1 h-3 w-3 opacity-50" />;
+    return sortDir === "asc"
+      ? <ArrowUp className="inline ml-1 h-3 w-3" />
+      : <ArrowDown className="inline ml-1 h-3 w-3" />;
+  };
+
 
   const handleSearch = useCallback(async (reference: string) => {
     setLoading(true);
