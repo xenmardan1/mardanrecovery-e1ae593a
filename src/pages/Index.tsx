@@ -376,14 +376,14 @@ const Index = () => {
                 <table className="w-full text-xs">
                   <thead className="bg-muted/70 sticky top-0">
                     <tr className="text-left">
-                      <th className="px-2 py-1.5 font-semibold text-foreground">Reference</th>
-                      <th className="px-2 py-1.5 font-semibold text-foreground">Name</th>
-                      <th className="px-2 py-1.5 font-semibold text-foreground text-right">Arrear</th>
-                      <th className="px-2 py-1.5 font-semibold text-foreground text-right">Age</th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("Reference")}>Reference<SortIcon col="Reference" /></th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("Name")}>Name<SortIcon col="Name" /></th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground text-right cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("ARREAR")}>Arrear<SortIcon col="ARREAR" /></th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground text-right cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("AGE")}>Age<SortIcon col="AGE" /></th>
                     </tr>
                   </thead>
                   <tbody>
-                    {records.map((r, i) => (
+                    {sortedRecords.map((r, i) => (
                       <tr
                         key={i}
                         onClick={() => setSelectedRecord(r)}
