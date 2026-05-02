@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import pescoLogo from "@/assets/pesco-logo.png";
 import { supabase } from "@/lib/supabase";
 import SearchBar from "@/components/SearchBar";
@@ -7,7 +7,7 @@ import RecordDetails from "@/components/RecordDetails";
 import PaymentAndUpload from "@/components/PaymentAndUpload";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MapPin, Download, ArrowLeft } from "lucide-react";
+import { MapPin, Download, ArrowLeft, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import ModifiedDataDownload from "@/components/ModifiedDataDownload";
 import SummaryDialog from "@/components/SummaryDialog";
@@ -24,6 +24,48 @@ const Index = () => {
   const [selectedRecord, setSelectedRecord] = useState<Record<string, any> | null>(null);
   const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState<Filters>({});
+  const [sortKey, setSortKey] = useState<string | null>(null);
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
+
+  const toggleSort = useCallback((key: string) => {
+    setSortKey((prev) => {
+      if (prev === key) {
+        setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+        return key;
+      }
+      setSortDir("asc");
+      return key;
+    });
+  }, []);
+
+  const sortedRecords = useMemo(() => {
+    if (!sortKey) return records;
+    const numeric = sortKey === "ARREAR" || sortKey === "AGE";
+    const copy = [...records];
+    copy.sort((a, b) => {
+      const av = a[sortKey];
+      const bv = b[sortKey];
+      if (av == null && bv == null) return 0;
+      if (av == null) return 1;
+      if (bv == null) return -1;
+      let cmp: number;
+      if (numeric) {
+        cmp = (parseFloat(String(av).replace(/,/g, "")) || 0) - (parseFloat(String(bv).replace(/,/g, "")) || 0);
+      } else {
+        cmp = String(av).localeCompare(String(bv), undefined, { numeric: true });
+      }
+      return sortDir === "asc" ? cmp : -cmp;
+    });
+    return copy;
+  }, [records, sortKey, sortDir]);
+
+  const SortIcon = ({ col }: { col: string }) => {
+    if (sortKey !== col) return <ArrowUpDown className="inline ml-1 h-3 w-3 opacity-50" />;
+    return sortDir === "asc"
+      ? <ArrowUp className="inline ml-1 h-3 w-3" />
+      : <ArrowDown className="inline ml-1 h-3 w-3" />;
+  };
+
 
   const handleSearch = useCallback(async (reference: string) => {
     setLoading(true);
@@ -290,14 +332,14 @@ const Index = () => {
                 <table className="w-full text-xs">
                   <thead className="bg-muted/70 sticky top-0">
                     <tr className="text-left">
-                      <th className="px-2 py-1.5 font-semibold text-foreground">Reference</th>
-                      <th className="px-2 py-1.5 font-semibold text-foreground">Name</th>
-                      <th className="px-2 py-1.5 font-semibold text-foreground text-right">Arrear</th>
-                      <th className="px-2 py-1.5 font-semibold text-foreground text-right">Age</th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("Reference")}>Reference<SortIcon col="Reference" /></th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("Name")}>Name<SortIcon col="Name" /></th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground text-right cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("ARREAR")}>Arrear<SortIcon col="ARREAR" /></th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground text-right cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("AGE")}>Age<SortIcon col="AGE" /></th>
                     </tr>
                   </thead>
                   <tbody>
-                    {records.map((r, i) => (
+                    {sortedRecords.map((r, i) => (
                       <tr
                         key={i}
                         onClick={() => setSelectedRecord(r)}
@@ -334,14 +376,14 @@ const Index = () => {
                 <table className="w-full text-xs">
                   <thead className="bg-muted/70 sticky top-0">
                     <tr className="text-left">
-                      <th className="px-2 py-1.5 font-semibold text-foreground">Reference</th>
-                      <th className="px-2 py-1.5 font-semibold text-foreground">Name</th>
-                      <th className="px-2 py-1.5 font-semibold text-foreground text-right">Arrear</th>
-                      <th className="px-2 py-1.5 font-semibold text-foreground text-right">Age</th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("Reference")}>Reference<SortIcon col="Reference" /></th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("Name")}>Name<SortIcon col="Name" /></th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground text-right cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("ARREAR")}>Arrear<SortIcon col="ARREAR" /></th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground text-right cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("AGE")}>Age<SortIcon col="AGE" /></th>
                     </tr>
                   </thead>
                   <tbody>
-                    {records.map((r, i) => (
+                    {sortedRecords.map((r, i) => (
                       <tr
                         key={i}
                         onClick={() => setSelectedRecord(r)}
