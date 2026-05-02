@@ -245,7 +245,7 @@ const Index = () => {
         </div>
       </header>
 
-      <main className="px-3 py-4 space-y-3 max-w-2xl mx-auto">
+      <main className="px-3 py-4 space-y-3 w-full mx-auto">
         <Card className="shadow-md border-0 bg-card/80 backdrop-blur-sm">
           <CardContent className="pt-4 pb-3 space-y-3">
             <SearchBar onSearch={handleSearch} loading={loading} />
