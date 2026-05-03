@@ -26,6 +26,10 @@ const Index = () => {
   const [filters, setFilters] = useState<Filters>({});
   const [sortKey, setSortKey] = useState<string | null>(null);
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
+  const [recoveryStart, setRecoveryStart] = useState("");
+  const [recoveryEnd, setRecoveryEnd] = useState("");
+  const [theftStart, setTheftStart] = useState("");
+  const [theftEnd, setTheftEnd] = useState("");
 
   const toggleSort = useCallback((key: string) => {
     setSortKey((prev) => {
