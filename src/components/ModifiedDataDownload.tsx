@@ -12,7 +12,11 @@ import FilterBar, { Filters } from "@/components/FilterBar";
 const TABLE_NAME = "PESCO ARREAR LIST MARDAN";
 const BUCKET = "picture";
 
-const ModifiedDataDownload = () => {
+interface Props {
+  variant?: "recovery" | "theft";
+}
+const ModifiedDataDownload = ({ variant = "recovery" }: Props) => {
+  const isTheft = variant === "theft";
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [downloading, setDownloading] = useState(false);
@@ -170,7 +174,7 @@ const ModifiedDataDownload = () => {
     <div className="space-y-3">
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-1">
-          <Label className="text-xs">Start Date</Label>
+          <Label className="text-xs">{isTheft ? "Reporting Start Date" : "Start Date"}</Label>
           <Input
             type="date"
             value={startDate}
@@ -178,7 +182,7 @@ const ModifiedDataDownload = () => {
           />
         </div>
         <div className="space-y-1">
-          <Label className="text-xs">End Date</Label>
+          <Label className="text-xs">{isTheft ? "Reporting End Date" : "End Date"}</Label>
           <Input
             type="date"
             value={endDate}
@@ -199,7 +203,7 @@ const ModifiedDataDownload = () => {
         className="w-full h-8 text-xs"
       >
         <Download className="mr-1 h-3.5 w-3.5" />
-        {downloading ? "Downloading..." : "Download Recovery Progress (ZIP)"}
+        {downloading ? "Downloading..." : isTheft ? "Download Theft Cases Progress (ZIP)" : "Download Recovery Progress (ZIP)"}
       </Button>
     </div>
   );
