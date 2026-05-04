@@ -101,6 +101,17 @@ const PaymentAndUpload = ({ record, onUpdated }: Props) => {
 
       const { data } = supabase.storage.from("picture").getPublicUrl(filePath);
       setImageUrl(data.publicUrl);
+
+      const { error: picDbError } = await supabase
+        .from(TABLE_NAME)
+        .update({ Picture: data.publicUrl })
+        .eq("Reference", record.Reference);
+
+      if (picDbError) {
+        toast.error("Saving picture URL failed: " + picDbError.message);
+        setSaving(false);
+        return;
+      }
     }
 
     toast.success("Saved successfully!");
