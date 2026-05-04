@@ -35,6 +35,7 @@ const PaymentAndUpload = ({ record, onUpdated }: Props) => {
   useEffect(() => {
     setPayment(record.payment ?? "");
     setPaymentMode(record["payment mode"] ?? "");
+    setPaymentDate(record.Payment_Date ?? "");
     setFile(null);
   }, [record.Reference]);
 
