@@ -14,7 +14,12 @@ interface Row {
   notModified: number;
 }
 
-const SummaryDialog = () => {
+interface Props {
+  variant?: "recovery" | "theft";
+}
+
+const SummaryDialog = ({ variant = "recovery" }: Props) => {
+  const isTheft = variant === "theft";
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [rows, setRows] = useState<Row[]>([]);
@@ -27,10 +32,14 @@ const SummaryDialog = () => {
       const counts = new Map<string, { total: number; modified: number }>();
       let from = 0;
 
+      const selectCols = isTheft
+        ? '"Sub Division", "Reporting Date"'
+        : '"Sub Division", payment';
+
       while (true) {
         const { data, error } = await supabase
           .from(TABLE_NAME)
-          .select('"Sub Division", payment')
+          .select(selectCols)
           .range(from, from + pageSize - 1);
 
         if (error) {
@@ -42,10 +51,11 @@ const SummaryDialog = () => {
 
         for (const r of data as any[]) {
           const sd = String(r["Sub Division"] ?? "Unknown");
-          const isModified = r.payment !== null && r.payment !== "" && r.payment !== undefined;
+          const flagVal = isTheft ? r["Reporting Date"] : r.payment;
+          const isFlagged = flagVal !== null && flagVal !== "" && flagVal !== undefined;
           const cur = counts.get(sd) ?? { total: 0, modified: 0 };
           cur.total += 1;
-          if (isModified) cur.modified += 1;
+          if (isFlagged) cur.modified += 1;
           counts.set(sd, cur);
         }
 
@@ -83,6 +93,10 @@ const SummaryDialog = () => {
     { total: 0, modified: 0, notModified: 0 }
   );
 
+  const modifiedLabel = isTheft ? "Theft" : "Modified";
+  const pendingLabel = isTheft ? "No Theft" : "Pending";
+  const title = isTheft ? "Sub Division Theft Summary" : "Sub Division Recovery Summary";
+
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
@@ -98,7 +112,7 @@ const SummaryDialog = () => {
       <DialogContent className="max-w-lg max-h-[85vh] overflow-hidden flex flex-col">
         <DialogHeader>
           <DialogTitle className="text-sm text-primary">
-            Sub Division Recovery Summary
+            {title}
           </DialogTitle>
         </DialogHeader>
 
@@ -113,8 +127,8 @@ const SummaryDialog = () => {
                 <tr className="text-left">
                   <th className="px-2 py-1.5 font-semibold">Sub Division</th>
                   <th className="px-2 py-1.5 font-semibold text-right">Total</th>
-                  <th className="px-2 py-1.5 font-semibold text-right text-green-600">Modified</th>
-                  <th className="px-2 py-1.5 font-semibold text-right text-orange-600">Pending</th>
+                  <th className="px-2 py-1.5 font-semibold text-right text-green-600">{modifiedLabel}</th>
+                  <th className="px-2 py-1.5 font-semibold text-right text-orange-600">{pendingLabel}</th>
                 </tr>
               </thead>
               <tbody>

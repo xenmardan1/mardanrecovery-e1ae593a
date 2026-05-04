@@ -319,7 +319,7 @@ const Index = () => {
             </CardHeader>
             <CardContent className="px-4 pb-4 space-y-3">
               <ModifiedDataDownload variant="theft" startDate={theftStart} endDate={theftEnd} onStartDateChange={setTheftStart} onEndDateChange={setTheftEnd} />
-              <SummaryDialog />
+              <SummaryDialog variant="theft" />
               <Button variant="outline" size="sm" onClick={displayTheft} className="w-full h-8 text-xs border-primary/30 hover:bg-primary/10 hover:text-primary">
                 Display Theft Cases
               </Button>
