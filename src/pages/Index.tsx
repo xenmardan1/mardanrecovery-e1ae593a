@@ -351,8 +351,8 @@ const Index = () => {
                   </thead>
                   <tbody>
                     {sortedRecords.map((r, i) => {
-                      const picUrl = r.Picture || supabase.storage.from("picture").getPublicUrl(`${r.Reference}.jpg`).data.publicUrl;
-                      const paymentMode = r.Payment_Mode ?? r["Payment Mode"] ?? "—";
+                      const picUrl = r.Picture || r.picture || supabase.storage.from("picture").getPublicUrl(`${r.Reference}.jpg`).data.publicUrl;
+                      const paymentMode = r["payment mode"] ?? r.Payment_Mode ?? r["Payment Mode"] ?? r.payment_mode ?? "—";
                       return (
                         <tr
                           key={i}
