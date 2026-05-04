@@ -340,17 +340,19 @@ const Index = () => {
                   <thead className="bg-muted/70 sticky top-0">
                     <tr className="text-left">
                       <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("Reference")}>Reference<SortIcon col="Reference" /></th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("Sub Division")}>Sub Division<SortIcon col="Sub Division" /></th>
                       <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("Name")}>Name<SortIcon col="Name" /></th>
-                      <th className="px-2 py-1.5 font-semibold text-foreground text-right cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("ARREAR")}>Arrear<SortIcon col="ARREAR" /></th>
-                      <th className="px-2 py-1.5 font-semibold text-foreground text-right cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("AGE")}>Age<SortIcon col="AGE" /></th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("Tariff")}>Tariff<SortIcon col="Tariff" /></th>
                       <th className="px-2 py-1.5 font-semibold text-foreground text-right cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("payment")}>Payment<SortIcon col="payment" /></th>
                       <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("Payment_Date")}>Payment Date<SortIcon col="Payment_Date" /></th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("Payment_Mode")}>Payment Mode<SortIcon col="Payment_Mode" /></th>
                       <th className="px-2 py-1.5 font-semibold text-foreground">Picture</th>
                     </tr>
                   </thead>
                   <tbody>
                     {sortedRecords.map((r, i) => {
                       const picUrl = r.Picture || supabase.storage.from("picture").getPublicUrl(`${r.Reference}.jpg`).data.publicUrl;
+                      const paymentMode = r.Payment_Mode ?? r["Payment Mode"] ?? "—";
                       return (
                         <tr
                           key={i}
@@ -358,11 +360,12 @@ const Index = () => {
                           className="cursor-pointer border-t border-border hover:bg-primary/10 transition-colors"
                         >
                           <td className="px-2 py-1.5 font-medium text-foreground whitespace-nowrap">{r.Reference}</td>
+                          <td className="px-2 py-1.5 text-muted-foreground truncate max-w-[120px]">{r["Sub Division"] ?? "—"}</td>
                           <td className="px-2 py-1.5 text-muted-foreground truncate max-w-[140px]">{r.Name ?? "—"}</td>
-                          <td className="px-2 py-1.5 text-foreground text-right whitespace-nowrap">{r.ARREAR ?? "—"}</td>
-                          <td className="px-2 py-1.5 text-muted-foreground text-right whitespace-nowrap">{r.AGE ?? "—"}</td>
+                          <td className="px-2 py-1.5 text-muted-foreground whitespace-nowrap">{r.Tariff ?? "—"}</td>
                           <td className="px-2 py-1.5 text-foreground text-right whitespace-nowrap">{r.payment ?? "—"}</td>
                           <td className="px-2 py-1.5 text-muted-foreground whitespace-nowrap">{r.Payment_Date ?? "—"}</td>
+                          <td className="px-2 py-1.5 text-muted-foreground whitespace-nowrap">{paymentMode}</td>
                           <td className="px-2 py-1.5" onClick={(e) => e.stopPropagation()}>
                             {picUrl ? (
                               <a href={picUrl} target="_blank" rel="noopener noreferrer">
