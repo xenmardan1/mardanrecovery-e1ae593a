@@ -72,7 +72,7 @@ const PaymentAndUpload = ({ record, onUpdated }: Props) => {
     // Update payment
     const { error: dbError } = await supabase
       .from(TABLE_NAME)
-      .update({ payment, "payment mode": paymentMode })
+      .update({ payment, "payment mode": paymentMode, Payment_Date: paymentDate || null })
       .eq("Reference", record.Reference);
 
     if (dbError) {
