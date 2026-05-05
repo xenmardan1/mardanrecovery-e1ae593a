@@ -173,12 +173,30 @@ const PaymentAndUpload = ({ record, onUpdated }: Props) => {
         </div>
         <div className="space-y-1">
           <Label className="text-xs">Picture</Label>
-          <Input
-            type="file"
-            accept="image/*"
-            onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-            className="text-sm"
-          />
+          <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-1">
+              <Label className="text-[10px] text-muted-foreground">Choose File</Label>
+              <Input
+                type="file"
+                accept="image/*"
+                onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+                className="text-sm"
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-[10px] text-muted-foreground">Take Photo</Label>
+              <Input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+                className="text-sm"
+              />
+            </div>
+          </div>
+          {file && (
+            <p className="text-[11px] text-muted-foreground truncate">Selected: {file.name}</p>
+          )}
         </div>
       </div>
 
