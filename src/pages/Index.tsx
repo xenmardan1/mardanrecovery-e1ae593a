@@ -5,6 +5,7 @@ import SearchBar from "@/components/SearchBar";
 import FilterBar, { Filters } from "@/components/FilterBar";
 import RecordDetails from "@/components/RecordDetails";
 import PaymentAndUpload from "@/components/PaymentAndUpload";
+import TheftUpdate from "@/components/TheftUpdate";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { MapPin, Download, ArrowLeft, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
