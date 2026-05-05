@@ -5,6 +5,7 @@ import SearchBar from "@/components/SearchBar";
 import FilterBar, { Filters } from "@/components/FilterBar";
 import RecordDetails from "@/components/RecordDetails";
 import PaymentAndUpload from "@/components/PaymentAndUpload";
+import TheftUpdate from "@/components/TheftUpdate";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { MapPin, Download, ArrowLeft, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
@@ -274,6 +275,16 @@ const Index = () => {
               <Download className="mr-2 h-4 w-4" />
               Download Theft Cases
             </Button>
+            <Button
+              variant="outline"
+              className="w-full h-10 text-sm border-primary/30 hover:bg-primary/10 hover:text-primary"
+              onClick={() => {
+                toast.info("Search a Reference above to update theft details");
+                document.querySelector('input')?.focus();
+              }}
+            >
+              Update Theft
+            </Button>
           </div>
         )}
 
@@ -542,6 +553,15 @@ const Index = () => {
               </CardHeader>
               <CardContent className="px-4 pb-4">
                 <PaymentAndUpload record={selectedRecord} onUpdated={refreshRecord} />
+              </CardContent>
+            </Card>
+
+            <Card id="theft-update-section" className="shadow-md border-0 bg-card/80 backdrop-blur-sm">
+              <CardHeader className="pb-2 px-4 pt-4">
+                <CardTitle className="text-sm text-primary font-semibold">Update Theft</CardTitle>
+              </CardHeader>
+              <CardContent className="px-4 pb-4">
+                <TheftUpdate record={selectedRecord} onUpdated={refreshRecord} />
               </CardContent>
             </Card>
           </>
