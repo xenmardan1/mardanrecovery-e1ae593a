@@ -235,7 +235,7 @@ const Index = () => {
   }, [filters]);
 
   return (
-    <div className="min-h-screen bg-background transition-colors duration-300">
+    <div className="min-h-screen flex flex-col bg-background transition-colors duration-300">
       <header className="header-gradient sticky top-0 z-10 shadow-lg">
         <div className="px-4 py-4 flex flex-col items-center text-center max-w-2xl mx-auto">
           <div className="h-14 w-14 rounded-full bg-white/20 backdrop-blur-sm p-1 mb-2 shadow-md">
