@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import * as XLSX from "xlsx";
 import JSZip from "jszip";
 
-interface Record {
+interface ArrearRecord {
   Reference: string;
   Name?: string;
   ARREAR?: number;
@@ -17,7 +17,7 @@ interface Record {
 }
 
 interface Props {
-  records: Record[];
+  records: ArrearRecord[];
   title: string;
 }
 
