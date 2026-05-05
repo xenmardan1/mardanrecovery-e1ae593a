@@ -7,7 +7,7 @@ import * as XLSX from "xlsx";
 import JSZip from "jszip";
 
 interface ArrearRecord {
-  Reference: string;
+  Reference?: string;
   Name?: string;
   ARREAR?: number;
   payment?: number;
