@@ -277,9 +277,20 @@ const Index = () => {
           </div>
         )}
 
-        {view !== "home" && !selectedRecord && (
-          <Button variant="ghost" size="sm" onClick={() => { setView("home"); setRecords([]); setFilters({}); }} className="text-xs h-7">
-            <ArrowLeft className="mr-1 h-3.5 w-3.5" /> Back
+        {view !== "home" && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              setView("home");
+              setRecords([]);
+              setSelectedRecord(null);
+              setFilters({});
+              setSortKey(null);
+            }}
+            className="h-8 text-xs border-primary/30 hover:bg-primary/10 hover:text-primary"
+          >
+            <ArrowLeft className="mr-1 h-3.5 w-3.5" /> Back to Home
           </Button>
         )}
 
