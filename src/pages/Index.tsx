@@ -275,6 +275,21 @@ const Index = () => {
               <Download className="mr-2 h-4 w-4" />
               Download Theft Cases
             </Button>
+            <Button
+              variant="outline"
+              className="w-full h-10 text-sm border-primary/30 hover:bg-primary/10 hover:text-primary"
+              onClick={() => {
+                if (!selectedRecord) {
+                  toast.warning("Please search a reference first");
+                  return;
+                }
+                setTimeout(() => {
+                  document.getElementById("theft-update-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
+                }, 50);
+              }}
+            >
+              Update Theft
+            </Button>
           </div>
         )}
 
