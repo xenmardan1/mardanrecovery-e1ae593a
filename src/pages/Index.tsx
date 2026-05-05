@@ -279,13 +279,8 @@ const Index = () => {
               variant="outline"
               className="w-full h-10 text-sm border-primary/30 hover:bg-primary/10 hover:text-primary"
               onClick={() => {
-                if (!selectedRecord) {
-                  toast.warning("Please search a reference first");
-                  return;
-                }
-                setTimeout(() => {
-                  document.getElementById("theft-update-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
-                }, 50);
+                toast.info("Search a Reference above to update theft details");
+                document.querySelector('input')?.focus();
               }}
             >
               Update Theft
