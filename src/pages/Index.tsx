@@ -235,7 +235,7 @@ const Index = () => {
   }, [filters]);
 
   return (
-    <div className="min-h-screen bg-background transition-colors duration-300">
+    <div className="min-h-screen flex flex-col bg-background transition-colors duration-300">
       <header className="header-gradient sticky top-0 z-10 shadow-lg">
         <div className="px-4 py-4 flex flex-col items-center text-center max-w-2xl mx-auto">
           <div className="h-14 w-14 rounded-full bg-white/20 backdrop-blur-sm p-1 mb-2 shadow-md">
@@ -253,7 +253,7 @@ const Index = () => {
         </div>
       </header>
 
-      <main className="px-3 py-4 space-y-3 w-full mx-auto">
+      <main className="flex-1 px-3 py-4 space-y-3 w-full mx-auto">
         <Card className="shadow-md border-0 bg-card/80 backdrop-blur-sm">
           <CardContent className="pt-4 pb-3 space-y-3">
             <SearchBar onSearch={handleSearch} loading={loading} />
@@ -548,7 +548,7 @@ const Index = () => {
         )}
       </main>
 
-      <footer className="mt-6 py-4 text-center text-xs text-muted-foreground border-t border-border/50">
+      <footer className="mt-auto py-4 text-center text-xs text-muted-foreground border-t border-border/50">
         Designed By Engr. Inayatullah
       </footer>
     </div>
