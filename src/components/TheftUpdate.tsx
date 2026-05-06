@@ -28,7 +28,7 @@ const TheftUpdate = ({ record, onUpdated }: Props) => {
   const [cLoad, setCLoad] = useState(record["C/Load"] ?? "");
   const [method, setMethod] = useState(record.Method ?? "");
   const [reportingDate, setReportingDate] = useState(record["Reporting Date"] ?? "");
-  const [officer, setOfficer] = useState(record["Name of reporting Officer"] ?? "");
+  const [officer, setOfficer] = useState(record["Name of Reporting officer"] ?? "");
   const [theftPicFile, setTheftPicFile] = useState<File | null>(null);
   const [mediaFile, setMediaFile] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
@@ -37,7 +37,7 @@ const TheftUpdate = ({ record, onUpdated }: Props) => {
     setCLoad(record["C/Load"] ?? "");
     setMethod(record.Method ?? "");
     setReportingDate(record["Reporting Date"] ?? "");
-    setOfficer(record["Name of reporting Officer"] ?? "");
+    setOfficer(record["Name of Reporting officer"] ?? "");
     setTheftPicFile(null);
     setMediaFile(null);
   }, [record.Reference]);
@@ -57,7 +57,7 @@ const TheftUpdate = ({ record, onUpdated }: Props) => {
         "C/Load": cLoad,
         Method: method,
         "Reporting Date": reportingDate || null,
-        "Name of reporting Officer": officer,
+        "Name of Reporting officer": officer,
       };
 
       if (theftPicFile) {
