@@ -209,7 +209,18 @@ const TheftUpdate = ({ record, onUpdated }: Props) => {
           </div>
         </div>
         {theftPicFile && (
-          <p className="text-[11px] text-muted-foreground truncate">Selected: {theftPicFile.name}</p>
+          <div className="space-y-1">
+            <p className="text-[11px] text-muted-foreground truncate">Selected: {theftPicFile.name}</p>
+            {theftPreview && (
+              <button
+                type="button"
+                onClick={() => { setZoom(1); setZoomKind("image"); setZoomSrc(theftPreview); }}
+                className="block w-full rounded-lg overflow-hidden border border-border hover:opacity-90 cursor-zoom-in"
+              >
+                <img src={theftPreview} alt="Theft preview" className="w-full h-auto max-h-48 object-cover" />
+              </button>
+            )}
+          </div>
         )}
       </div>
 
