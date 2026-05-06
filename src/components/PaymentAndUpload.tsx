@@ -186,13 +186,22 @@ const PaymentAndUpload = ({ record, onUpdated }: Props) => {
             </div>
             <div className="space-y-1">
               <Label className="text-[10px] text-muted-foreground">Take Photo</Label>
-              <Input
+              <input
+                ref={camRef}
                 type="file"
                 accept="image/*"
                 capture="environment"
                 onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-                className="text-sm"
+                className="hidden"
               />
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full"
+                onClick={() => camRef.current?.click()}
+              >
+                <Camera className="h-4 w-4" />
+              </Button>
             </div>
           </div>
           {file && (
