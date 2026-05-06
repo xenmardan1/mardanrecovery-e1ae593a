@@ -150,7 +150,7 @@ const TheftUpdate = ({ record, onUpdated }: Props) => {
       </div>
 
       <div className="space-y-1">
-        <Label className="text-xs">Name of Reporting Officer</Label>
+        <Label className="text-xs">Name of Reporting officer</Label>
         <Input value={officer} onChange={(e) => setOfficer(e.target.value)} placeholder="Officer name" />
       </div>
 
