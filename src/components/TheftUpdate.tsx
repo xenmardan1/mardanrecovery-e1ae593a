@@ -32,6 +32,8 @@ const TheftUpdate = ({ record, onUpdated }: Props) => {
   const [theftPicFile, setTheftPicFile] = useState<File | null>(null);
   const [mediaFile, setMediaFile] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
+  const theftCamRef = useRef<HTMLInputElement>(null);
+  const mediaCamRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setCLoad(record["C/Load"] ?? "");
