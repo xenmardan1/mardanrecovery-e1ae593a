@@ -257,9 +257,57 @@ const TheftUpdate = ({ record, onUpdated }: Props) => {
           </div>
         </div>
         {mediaFile && (
-          <p className="text-[11px] text-muted-foreground truncate">Selected: {mediaFile.name}</p>
+          <div className="space-y-1">
+            <p className="text-[11px] text-muted-foreground truncate">Selected: {mediaFile.name}</p>
+            {mediaPreview && (mediaFile.type.startsWith("video") ? (
+              <button
+                type="button"
+                onClick={() => { setZoom(1); setZoomKind("video"); setZoomSrc(mediaPreview); }}
+                className="block w-full rounded-lg overflow-hidden border border-border hover:opacity-90 cursor-zoom-in"
+              >
+                <video src={mediaPreview} className="w-full h-auto max-h-48 object-cover" muted />
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => { setZoom(1); setZoomKind("image"); setZoomSrc(mediaPreview); }}
+                className="block w-full rounded-lg overflow-hidden border border-border hover:opacity-90 cursor-zoom-in"
+              >
+                <img src={mediaPreview} alt="Media preview" className="w-full h-auto max-h-48 object-cover" />
+              </button>
+            ))}
+          </div>
         )}
       </div>
+
+      <Dialog open={!!zoomSrc} onOpenChange={(o) => !o && setZoomSrc(null)}>
+        <DialogContent className="max-w-4xl w-[95vw] p-2 sm:p-4">
+          <DialogTitle className="sr-only">Preview</DialogTitle>
+          {zoomKind === "image" && (
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <Button size="icon" variant="outline" onClick={() => setZoom((z) => Math.max(0.05, +(z - 0.1).toFixed(2)))}>
+                <ZoomOut className="h-4 w-4" />
+              </Button>
+              <span className="text-xs text-muted-foreground w-12 text-center">{Math.round(zoom * 100)}%</span>
+              <Button size="icon" variant="outline" onClick={() => setZoom((z) => Math.min(4, +(z + 0.1).toFixed(2)))}>
+                <ZoomIn className="h-4 w-4" />
+              </Button>
+            </div>
+          )}
+          <div className="overflow-auto max-h-[75vh] rounded-md bg-muted/30">
+            {zoomSrc && zoomKind === "image" ? (
+              <img
+                src={zoomSrc}
+                alt="Zoomed"
+                style={{ transform: `scale(${zoom})`, transformOrigin: "top left" }}
+                className="transition-transform duration-150 max-w-none"
+              />
+            ) : zoomSrc && (
+              <video src={zoomSrc} controls autoPlay className="w-full max-h-[75vh]" />
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <Button onClick={handleSave} disabled={saving} className="w-full">
         <Save className="mr-2 h-4 w-4" />
