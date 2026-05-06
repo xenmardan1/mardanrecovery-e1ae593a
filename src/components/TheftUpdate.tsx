@@ -11,7 +11,8 @@ import {
 } from "@/components/ui/select";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
-import { Save, Calendar as CalendarIcon } from "lucide-react";
+import { Save, Calendar as CalendarIcon, Camera, Video } from "lucide-react";
+import { useRef } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { format, parseISO, isValid } from "date-fns";
