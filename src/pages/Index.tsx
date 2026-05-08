@@ -443,7 +443,7 @@ const Index = () => {
                       <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("Reference")}>Reference<SortIcon col="Reference" /></th>
                       <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("Name")}>Name<SortIcon col="Name" /></th>
                       <th className="px-2 py-1.5 font-semibold text-foreground text-right cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("C/Load")}>C/Load<SortIcon col="C/Load" /></th>
-                      <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("Reporting Officer")}>Name of Reporting Officer<SortIcon col="Reporting Officer" /></th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("Name of Reporting officer")}>Name of Reporting Officer<SortIcon col="Name of Reporting officer" /></th>
                       <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("Reporting Date")}>Reporting Date<SortIcon col="Reporting Date" /></th>
                       <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("Method")}>Method<SortIcon col="Method" /></th>
                       <th className="px-2 py-1.5 font-semibold text-foreground">Theft Pic</th>
@@ -463,7 +463,7 @@ const Index = () => {
                           <td className="px-2 py-1.5 font-medium text-foreground whitespace-nowrap">{r.Reference}</td>
                           <td className="px-2 py-1.5 text-muted-foreground truncate max-w-[140px]">{r.Name ?? "—"}</td>
                           <td className="px-2 py-1.5 text-foreground text-right whitespace-nowrap">{r["C/Load"] ?? "—"}</td>
-                          <td className="px-2 py-1.5 text-muted-foreground whitespace-nowrap">{r["Reporting Officer"] ?? "—"}</td>
+                          <td className="px-2 py-1.5 text-muted-foreground whitespace-nowrap">{r["Name of Reporting officer"] ?? "—"}</td>
                           <td className="px-2 py-1.5 text-muted-foreground whitespace-nowrap">{r["Reporting Date"] ?? "—"}</td>
                           <td className="px-2 py-1.5 text-muted-foreground whitespace-nowrap">{r.Method ?? "—"}</td>
                           <td className="px-2 py-1.5" onClick={(e) => e.stopPropagation()}>
