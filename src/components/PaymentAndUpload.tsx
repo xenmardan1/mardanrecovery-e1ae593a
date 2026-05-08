@@ -71,6 +71,10 @@ const PaymentAndUpload = ({ record, onUpdated }: Props) => {
     };
   }, [record.Reference]);
 
+  const isPaymentDateFilledInDb = !!record.Payment_Date;
+  const arePaymentFieldsFilled = !!(payment && paymentMode && paymentDate);
+  const isPaymentButtonDisabled = isPaymentDateFilledInDb || !arePaymentFieldsFilled;
+
   const handleSave = async () => {
     setSaving(true);
 
@@ -268,11 +272,12 @@ const PaymentAndUpload = ({ record, onUpdated }: Props) => {
 
       <Button
         onClick={handleSave}
-        disabled={saving || !!(record.payment && String(record.payment).trim() !== "")}
+        disabled={saving || isPaymentButtonDisabled}
         className="w-full"
+        title={isPaymentDateFilledInDb ? "Payment Date already filled in database" : !arePaymentFieldsFilled ? "Please fill all payment fields" : ""}
       >
         <Save className="mr-2 h-4 w-4" />
-        {saving ? "Saving..." : record.payment && String(record.payment).trim() !== "" ? "Already Modified" : "Save All"}
+        {saving ? "Saving..." : isPaymentDateFilledInDb ? "Payment Already Saved" : "Save All"}
       </Button>
     </div>
   );
