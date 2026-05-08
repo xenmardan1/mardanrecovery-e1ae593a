@@ -43,6 +43,7 @@ const DisplayedDataDownload = ({ records, title }: Props) => {
     setProgress("Preparing download...");
 
     try {
+      const zip = new JSZip();
       const timestamp = new Date().toISOString().split("T")[0];
       const folderName = `${title.replace(/\s+/g, "_")}_${timestamp}`;
       const mainFolder = zip.folder(folderName)!;
