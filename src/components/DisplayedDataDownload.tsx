@@ -127,8 +127,8 @@ const DisplayedDataDownload = ({ records, title }: Props) => {
           "Name of Reporting Officer": r["Name of Reporting officer"] || "",
           "Reporting Date": r["Reporting Date"] || "",
           Method: r.Method || "",
-          "Theft Pic Link": theftPic,
-          "Media Link": media,
+          "Theft Pic": picLink || theftPic,
+          "Media": mediaLink || media,
         });
       }
 
@@ -143,28 +143,26 @@ const DisplayedDataDownload = ({ records, title }: Props) => {
         headers.push(cell ? String(cell.v) : "");
       }
 
-      // Make Theft Pic Link column a web hyperlink
-      const picLinkCol = headers.indexOf("Theft Pic Link");
-      if (picLinkCol >= 0) {
+      // Make Theft Pic column a hyperlink to local file
+      const picCol = headers.indexOf("Theft Pic");
+      if (picCol >= 0) {
         for (let r = 1; r <= range.e.r; r++) {
-          const addr = XLSX.utils.encode_cell({ r, c: picLinkCol });
+          const addr = XLSX.utils.encode_cell({ r, c: picCol });
           const cell = ws[addr];
           if (cell && cell.v) {
-            cell.l = { Target: cell.v, Tooltip: "View Theft Picture Online" };
-            cell.v = "View Pic";
+            cell.l = { Target: cell.v, Tooltip: "Open Theft Picture" };
           }
         }
       }
 
-      // Make Media Link column a web hyperlink
-      const mediaLinkCol = headers.indexOf("Media Link");
-      if (mediaLinkCol >= 0) {
+      // Make Media column a hyperlink to local file
+      const mediaCol = headers.indexOf("Media");
+      if (mediaCol >= 0) {
         for (let r = 1; r <= range.e.r; r++) {
-          const addr = XLSX.utils.encode_cell({ r, c: mediaLinkCol });
+          const addr = XLSX.utils.encode_cell({ r, c: mediaCol });
           const cell = ws[addr];
           if (cell && cell.v) {
-            cell.l = { Target: cell.v, Tooltip: "Play/View Media Online" };
-            cell.v = "Play/View";
+            cell.l = { Target: cell.v, Tooltip: "Play/View Media" };
           }
         }
       }
@@ -180,8 +178,8 @@ const DisplayedDataDownload = ({ records, title }: Props) => {
         { wch: 20 }, // Name of Reporting Officer
         { wch: 15 }, // Reporting Date
         { wch: 15 }, // Method
-        { wch: 12 }, // Theft Pic Link
-        { wch: 12 }, // Media Link
+        { wch: 12 }, // Theft Pic
+        { wch: 12 }, // Media
       ];
 
       const wb = XLSX.utils.book_new();
