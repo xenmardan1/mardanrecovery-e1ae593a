@@ -96,7 +96,7 @@ const Auth = () => {
           <div className="flex justify-center">
             <img src={pescoLogo} alt="PESCO" className="h-16 w-auto" />
           </div>
-          <CardTitle className="text-2xl font-bold text-white">PESCO Arrear Recovery</CardTitle>
+          <CardTitle className="text-2xl font-bold text-white">PESCO MARDAN CIRCLE RECOVERY AND ANTI THEFT PORTAL</CardTitle>
           <CardDescription className="text-slate-400">
             {mode === "login" && "Sign in to your account"}
             {mode === "signup" && "Create a new account"}
