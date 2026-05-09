@@ -28,6 +28,7 @@ const Index = () => {
   const [selectedRecord, setSelectedRecord] = useState<Record<string, any> | null>(null);
   const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState<Filters>({});
+  const [minArrear, setMinArrear] = useState(0);
   const [sortKey, setSortKey] = useState<string | null>(null);
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
   const [recoveryStart, setRecoveryStart] = useState("");
@@ -108,7 +109,7 @@ const Index = () => {
     setSelectedRecord(null);
 
     const keys = Object.keys(newFilters);
-    if (keys.length === 0) {
+    if (keys.length === 0 && minArrear === 0) {
       setRecords([]);
       return;
     }
@@ -142,7 +143,13 @@ const Index = () => {
       if (page.length < pageSize) break;
       from += pageSize;
     }
-    const data = allData;
+    let data = allData;
+    if (minArrear > 0) {
+      data = data.filter((record) => {
+        const arrear = parseFloat(String(record.ARREAR || "0").replace(/,/g, "")) || 0;
+        return arrear >= minArrear;
+      });
+    }
     if (error) {
       toast.error("Filter failed: " + error.message);
     } else {
@@ -152,7 +159,7 @@ const Index = () => {
       else toast.success(`Found ${data?.length} records`);
     }
     setLoading(false);
-  }, []);
+  }, [minArrear]);
 
   const refreshRecord = useCallback(() => {
     if (selectedRecord?.Reference) handleSearch(selectedRecord.Reference);
@@ -206,7 +213,7 @@ const Index = () => {
   const displayTheft = useCallback(() => displayByColumn("Reporting Date", "theft cases", theftStart, theftEnd), [displayByColumn, theftStart, theftEnd]);
 
   const downloadExcel = useCallback(async () => {
-    toast.info("Fetching all records…");
+    toast.info("Fetching filtered records…");
 
     const keys = Object.keys(filters);
     const pageSize = 1000;
@@ -231,17 +238,37 @@ const Index = () => {
       from += pageSize;
     }
 
+    if (minArrear > 0) {
+      allData = allData.filter((record) => {
+        const arrear = parseFloat(String(record.ARREAR || "0").replace(/,/g, "")) || 0;
+        return arrear >= minArrear;
+      });
+    }
+
     if (allData.length === 0) {
-      toast.error("No records to download");
+      toast.error("No records match the selected filters");
       return;
     }
 
     const ws = XLSX.utils.json_to_sheet(allData);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Arrears");
-    XLSX.writeFile(wb, "PESCO_Arrears_Data.xlsx");
-    toast.success(`Downloaded ${allData.length} records`);
-  }, [filters]);
+    XLSX.writeFile(wb, "PESCO_Arrears_Filtered.xlsx");
+    toast.success(`Downloaded ${allData.length} filtered records`);
+  }, [filters, minArrear]);
+
+  const downloadResults = useCallback(() => {
+    if (records.length === 0) {
+      toast.error("No records to download");
+      return;
+    }
+
+    const ws = XLSX.utils.json_to_sheet(records);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Results");
+    XLSX.writeFile(wb, "PESCO_Results.xlsx");
+    toast.success(`Downloaded ${records.length} displayed records`);
+  }, [records]);
 
   return (
     <div className="min-h-screen flex flex-col bg-background transition-colors duration-300">
@@ -330,7 +357,7 @@ const Index = () => {
               <CardTitle className="text-sm text-primary font-semibold">Download Arrears List</CardTitle>
             </CardHeader>
             <CardContent className="px-4 pb-4 space-y-3">
-              <FilterBar filters={filters} onFiltersChange={handleFilterChange} />
+              <FilterBar filters={filters} onFiltersChange={handleFilterChange} minArrear={minArrear} onMinArrearChange={(val) => { setMinArrear(val); handleFilterChange(filters); }} />
               <Button variant="outline" size="sm" onClick={downloadExcel} className="w-full h-8 text-xs border-primary/30 hover:bg-primary/10 hover:text-primary transition-all">
                 <Download className="mr-1 h-3.5 w-3.5" />
                 Download Selected Arrears Lists (Excel)
@@ -504,7 +531,7 @@ const Index = () => {
                 <CardTitle className="text-sm text-primary font-semibold">
                   Results ({records.length})
                 </CardTitle>
-                <Button variant="outline" size="sm" onClick={downloadExcel} className="h-8 text-xs border-primary/30 hover:bg-primary/10">
+                <Button variant="outline" size="sm" onClick={downloadResults} className="h-8 text-xs border-primary/30 hover:bg-primary/10">
                   <Download className="mr-1 h-3.5 w-3.5" />
                   Download Excel
                 </Button>
