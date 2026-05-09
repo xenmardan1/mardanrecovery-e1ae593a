@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Filter, X, ChevronDown, ChevronUp } from "lucide-react";
 import { FILTER_OPTIONS } from "@/lib/filterOptions";
 
@@ -17,9 +19,11 @@ export type Filters = Record<string, string[]>;
 interface FilterBarProps {
   filters: Filters;
   onFiltersChange: (filters: Filters) => void;
+  minArrear?: number;
+  onMinArrearChange?: (value: number) => void;
 }
 
-const FilterBar = ({ filters, onFiltersChange }: FilterBarProps) => {
+const FilterBar = ({ filters, onFiltersChange, minArrear = 0, onMinArrearChange }: FilterBarProps) => {
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 
   const getOptionsFor = (colKey: string): string[] => {
@@ -45,8 +49,11 @@ const FilterBar = ({ filters, onFiltersChange }: FilterBarProps) => {
     setExpanded((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
-  const clearAll = () => onFiltersChange({});
-  const hasFilters = Object.keys(filters).length > 0;
+  const clearAll = () => {
+    onFiltersChange({});
+    if (onMinArrearChange) onMinArrearChange(0);
+  };
+  const hasFilters = Object.keys(filters).length > 0 || minArrear > 0;
 
   return (
     <div className="space-y-2">
@@ -61,6 +68,22 @@ const FilterBar = ({ filters, onFiltersChange }: FilterBarProps) => {
             Clear All
           </Button>
         )}
+      </div>
+
+      <div className="space-y-2">
+        <div className="border border-border rounded-md px-3 py-2">
+          <Label className="text-xs font-medium text-foreground mb-1 block">Minimum Arrear</Label>
+          <Input
+            type="number"
+            placeholder="Enter minimum amount"
+            value={minArrear}
+            onChange={(e) => {
+              const val = e.target.value ? parseInt(e.target.value) : 0;
+              if (onMinArrearChange) onMinArrearChange(val);
+            }}
+            className="text-xs h-8"
+          />
+        </div>
       </div>
 
       <div className="space-y-1">
