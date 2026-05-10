@@ -12,8 +12,10 @@ import { Button } from "@/components/ui/button";
 import { MapPin, Download, ArrowLeft, ArrowUpDown, ArrowUp, ArrowDown, LogOut } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import ModifiedDataDownload from "@/components/ModifiedDataDownload";
+import TheftDataDownload from "@/components/TheftDataDownload";
 import DisplayedDataDownload from "@/components/DisplayedDataDownload";
 import SummaryDialog from "@/components/SummaryDialog";
+import TheftFilterBar, { TheftFilters } from "@/components/TheftFilterBar";
 import { toast } from "sonner";
 import * as XLSX from "xlsx";
 
@@ -28,7 +30,7 @@ const Index = () => {
   const [selectedRecord, setSelectedRecord] = useState<Record<string, any> | null>(null);
   const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState<Filters>({});
-  const [theftFilters, setTheftFilters] = useState<Filters>({});
+  const [theftFilters, setTheftFilters] = useState<TheftFilters>({});
   const [minArrear, setMinArrear] = useState(0);
   const [sortKey, setSortKey] = useState<string | null>(null);
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
@@ -223,7 +225,51 @@ const Index = () => {
   }, [filters]);
 
   const displayModified = useCallback(() => displayByColumn("Payment_Date", "recovery cases", recoveryStart, recoveryEnd, true, filters), [displayByColumn, recoveryStart, recoveryEnd, filters]);
-  const displayTheft = useCallback(() => displayByColumn("Reporting Date", "theft cases", theftStart, theftEnd, true, theftFilters), [displayByColumn, theftStart, theftEnd, theftFilters]);
+
+  const displayTheft = useCallback(async () => {
+    setLoading(true);
+    setRecords([]);
+    setSelectedRecord(null);
+    setSortKey(null);
+    setSortDir("asc");
+    const pageSize = 1000;
+    let allData: Record<string, any>[] = [];
+    let from = 0;
+
+    while (true) {
+      let q = supabase
+        .from(TABLE_NAME)
+        .select("*")
+        .not("Reporting Date", "is", null);
+
+      if (theftStart && theftStart.trim()) q = q.gte("Reporting Date", theftStart);
+      if (theftEnd && theftEnd.trim()) q = q.lte("Reporting Date", theftEnd);
+
+      if (Object.keys(theftFilters).length > 0) {
+        Object.entries(theftFilters).forEach(([key, vals]) => {
+          if (vals && vals.length > 0) {
+            q = q.in(key, vals);
+          }
+        });
+      }
+
+      const { data, error } = await q.range(from, from + pageSize - 1);
+      if (error) {
+        toast.error("Fetch failed: " + error.message);
+        setLoading(false);
+        return;
+      }
+      if (!data || data.length === 0) break;
+      allData = allData.concat(data);
+      if (data.length < pageSize) break;
+      from += pageSize;
+    }
+
+    setRecords(allData);
+    if (allData.length === 0) toast.info("No theft cases found");
+    else toast.success(`Found ${allData.length} theft cases`);
+    setLoading(false);
+  }, [theftStart, theftEnd, theftFilters]);
 
   const downloadExcel = useCallback(async () => {
     toast.info("Fetching filtered records…");
@@ -402,7 +448,7 @@ const Index = () => {
               <CardTitle className="text-sm text-primary font-semibold">Download Theft Cases</CardTitle>
             </CardHeader>
             <CardContent className="px-4 pb-4 space-y-3">
-              <ModifiedDataDownload variant="theft" startDate={theftStart} endDate={theftEnd} onStartDateChange={setTheftStart} onEndDateChange={setTheftEnd} onFiltersChange={setTheftFilters} />
+              <TheftDataDownload startDate={theftStart} endDate={theftEnd} onStartDateChange={setTheftStart} onEndDateChange={setTheftEnd} onFiltersChange={setTheftFilters} />
               <SummaryDialog variant="theft" />
               <Button variant="outline" size="sm" onClick={displayTheft} className="w-full h-8 text-xs border-primary/30 hover:bg-primary/10 hover:text-primary">
                 Display Theft Cases
@@ -478,50 +524,56 @@ const Index = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="px-4 pb-4">
-              <div className="max-h-96 overflow-auto rounded-md border border-border">
-                <table className="w-full text-xs">
+              <div className="max-h-96 overflow-auto rounded-md border border-border" style={{ overflowX: 'auto' }}>
+                <table className="w-full text-xs border-collapse">
                   <thead className="bg-muted/70 sticky top-0 divide-x divide-border">
                     <tr className="text-left">
-                      <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("Reference")}>Reference<SortIcon col="Reference" /></th>
-                      <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("Sub Division")}>Sub Division<SortIcon col="Sub Division" /></th>
-                      <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("Name")}>Name<SortIcon col="Name" /></th>
-                      <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("Father")}>Father<SortIcon col="Father" /></th>
-                      <th className="px-2 py-1.5 font-semibold text-foreground text-right cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("S_Load")}>S_Load<SortIcon col="S_Load" /></th>
-                      <th className="px-2 py-1.5 font-semibold text-foreground text-right cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("C/Load")}>C/Load<SortIcon col="C/Load" /></th>
-                      <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("Name of Reporting officer")}>Name of Reporting Officer<SortIcon col="Name of Reporting officer" /></th>
-                      <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("Reporting Date")}>Reporting Date<SortIcon col="Reporting Date" /></th>
-                      <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("Method")}>Method<SortIcon col="Method" /></th>
-                      <th className="px-2 py-1.5 font-semibold text-foreground">Theft Pic</th>
-                      <th className="px-2 py-1.5 font-semibold text-foreground">Media</th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted whitespace-nowrap min-w-fit" onClick={() => toggleSort("Reference")}>Reference<SortIcon col="Reference" /></th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted whitespace-nowrap min-w-fit" onClick={() => toggleSort("Sub Division")}>Sub Division<SortIcon col="Sub Division" /></th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted whitespace-nowrap min-w-fit" onClick={() => toggleSort("Name")}>Name<SortIcon col="Name" /></th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted whitespace-nowrap min-w-fit" onClick={() => toggleSort("Father")}>Father<SortIcon col="Father" /></th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground text-right cursor-pointer select-none hover:bg-muted whitespace-nowrap min-w-fit" onClick={() => toggleSort("S_Load")}>S_Load<SortIcon col="S_Load" /></th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground text-right cursor-pointer select-none hover:bg-muted whitespace-nowrap min-w-fit" onClick={() => toggleSort("C/Load")}>C/Load<SortIcon col="C/Load" /></th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted whitespace-nowrap min-w-fit" onClick={() => toggleSort("Name of Reporting officer")}>Name of Reporting Officer<SortIcon col="Name of Reporting officer" /></th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted whitespace-nowrap min-w-fit" onClick={() => toggleSort("Reporting Date")}>Reporting Date<SortIcon col="Reporting Date" /></th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted whitespace-nowrap min-w-fit" onClick={() => toggleSort("Method")}>Method<SortIcon col="Method" /></th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground whitespace-nowrap min-w-fit">Theft Pic</th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground whitespace-nowrap min-w-fit">Media</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border">
                     {sortedRecords.map((r, i) => {
-                      const theftPic = r["Theft Pic"] || r["Theft_Pic"];
-                      const media = r.media || r.Media;
+                      const sLoad = r.S_Load || r["S Load"] || r.S_load || r["Sanctioned Load"] || "";
+                      const cLoad = r["C/Load"] || r["C Load"] || r.C_Load || r["Connected Load"] || "";
+                      const reportingOfficer = r["Name of Reporting officer"] || r["Name of Reporting Officer"] || r["Reporting officer"] || r["Reporting Officer Name"] || "";
+                      const reportingDate = r["Reporting Date"] || r.Reporting_Date || r.reporting_date || "";
+                      const method = r.Method || r.method || "";
+                      const theftPic = r["Theft Pic"] || r["Theft_Pic"] || r.theft_pic || r.Theft_Picture || r["Theft Picture"] || "";
+                      const media = r.media || r.Media || r.attachment || r.Attachment || "";
+
                       return (
                         <tr
                           key={i}
                           onClick={() => setSelectedRecord(r)}
                           className="cursor-pointer divide-x divide-border hover:bg-primary/10 transition-colors"
                         >
-                          <td className="px-2 py-1.5 font-medium text-foreground whitespace-nowrap">{r.Reference}</td>
-                          <td className="px-2 py-1.5 text-muted-foreground whitespace-nowrap">{r["Sub Division"] ?? "—"}</td>
-                          <td className="px-2 py-1.5 text-muted-foreground truncate max-w-[140px]">{r.Name ?? "—"}</td>
-                          <td className="px-2 py-1.5 text-muted-foreground whitespace-nowrap">{r.Father ?? "—"}</td>
-                          <td className="px-2 py-1.5 text-foreground text-right whitespace-nowrap">{r.S_Load ?? "—"}</td>
-                          <td className="px-2 py-1.5 text-foreground text-right whitespace-nowrap">{r["C/Load"] ?? "—"}</td>
-                          <td className="px-2 py-1.5 text-muted-foreground whitespace-nowrap">{r["Name of Reporting officer"] ?? "—"}</td>
-                          <td className="px-2 py-1.5 text-muted-foreground whitespace-nowrap">{r["Reporting Date"] ?? "—"}</td>
-                          <td className="px-2 py-1.5 text-muted-foreground whitespace-nowrap">{r.Method ?? "—"}</td>
-                          <td className="px-2 py-1.5" onClick={(e) => e.stopPropagation()}>
+                          <td className="px-2 py-1.5 font-medium text-foreground whitespace-nowrap min-w-fit">{r.Reference}</td>
+                          <td className="px-2 py-1.5 text-muted-foreground whitespace-nowrap min-w-fit">{r["Sub Division"] ?? "—"}</td>
+                          <td className="px-2 py-1.5 text-muted-foreground truncate max-w-[100px]">{r.Name ?? "—"}</td>
+                          <td className="px-2 py-1.5 text-muted-foreground whitespace-nowrap min-w-fit">{r.Father ?? "—"}</td>
+                          <td className="px-2 py-1.5 text-foreground text-right whitespace-nowrap min-w-fit">{sLoad || "—"}</td>
+                          <td className="px-2 py-1.5 text-foreground text-right whitespace-nowrap min-w-fit">{cLoad || "—"}</td>
+                          <td className="px-2 py-1.5 text-muted-foreground whitespace-nowrap min-w-fit">{reportingOfficer || "—"}</td>
+                          <td className="px-2 py-1.5 text-muted-foreground whitespace-nowrap min-w-fit">{reportingDate || "—"}</td>
+                          <td className="px-2 py-1.5 text-muted-foreground whitespace-nowrap min-w-fit">{method || "—"}</td>
+                          <td className="px-2 py-1.5 min-w-fit" onClick={(e) => e.stopPropagation()}>
                             {theftPic ? (
                               <a href={theftPic} target="_blank" rel="noopener noreferrer">
                                 <img src={theftPic} alt="theft" className="h-10 w-10 object-cover rounded" onError={(e) => ((e.target as HTMLImageElement).style.display = "none")} />
                               </a>
                             ) : "—"}
                           </td>
-                          <td className="px-2 py-1.5" onClick={(e) => e.stopPropagation()}>
+                          <td className="px-2 py-1.5 min-w-fit" onClick={(e) => e.stopPropagation()}>
                             {media ? (
                               <a href={media} target="_blank" rel="noopener noreferrer" className="text-primary underline">View</a>
                             ) : "—"}
