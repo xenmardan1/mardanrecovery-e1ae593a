@@ -12,8 +12,10 @@ import { Button } from "@/components/ui/button";
 import { MapPin, Download, ArrowLeft, ArrowUpDown, ArrowUp, ArrowDown, LogOut } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import ModifiedDataDownload from "@/components/ModifiedDataDownload";
+import TheftDataDownload from "@/components/TheftDataDownload";
 import DisplayedDataDownload from "@/components/DisplayedDataDownload";
 import SummaryDialog from "@/components/SummaryDialog";
+import TheftFilterBar, { TheftFilters } from "@/components/TheftFilterBar";
 import { toast } from "sonner";
 import * as XLSX from "xlsx";
 
@@ -28,7 +30,7 @@ const Index = () => {
   const [selectedRecord, setSelectedRecord] = useState<Record<string, any> | null>(null);
   const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState<Filters>({});
-  const [theftFilters, setTheftFilters] = useState<Filters>({});
+  const [theftFilters, setTheftFilters] = useState<TheftFilters>({});
   const [minArrear, setMinArrear] = useState(0);
   const [sortKey, setSortKey] = useState<string | null>(null);
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
@@ -223,7 +225,51 @@ const Index = () => {
   }, [filters]);
 
   const displayModified = useCallback(() => displayByColumn("Payment_Date", "recovery cases", recoveryStart, recoveryEnd, true, filters), [displayByColumn, recoveryStart, recoveryEnd, filters]);
-  const displayTheft = useCallback(() => displayByColumn("Reporting Date", "theft cases", theftStart, theftEnd, true, theftFilters), [displayByColumn, theftStart, theftEnd, theftFilters]);
+
+  const displayTheft = useCallback(async () => {
+    setLoading(true);
+    setRecords([]);
+    setSelectedRecord(null);
+    setSortKey(null);
+    setSortDir("asc");
+    const pageSize = 1000;
+    let allData: Record<string, any>[] = [];
+    let from = 0;
+
+    while (true) {
+      let q = supabase
+        .from(TABLE_NAME)
+        .select("*")
+        .not("Payment_Date", "is", null)
+        .neq("Payment_Date", "");
+
+      if (theftStart) q = q.gte("Payment_Date", theftStart);
+      if (theftEnd) q = q.lte("Payment_Date", theftEnd);
+
+      if (Object.keys(theftFilters).length > 0) {
+        Object.entries(theftFilters).forEach(([key, vals]) => {
+          if (vals && vals.length > 0) {
+            q = q.in(key, vals);
+          }
+        });
+      }
+
+      const { data, error } = await q.range(from, from + pageSize - 1);
+      if (error) {
+        toast.error("Fetch failed: " + error.message);
+        setLoading(false);
+        return;
+      }
+      if (!data || data.length === 0) break;
+      allData = allData.concat(data);
+      if (data.length < pageSize) break;
+      from += pageSize;
+    }
+    setRecords(allData);
+    if (allData.length === 0) toast.info("No theft cases found");
+    else toast.success(`Found ${allData.length} theft cases`);
+    setLoading(false);
+  }, [theftStart, theftEnd, theftFilters]);
 
   const downloadExcel = useCallback(async () => {
     toast.info("Fetching filtered records…");
@@ -402,7 +448,7 @@ const Index = () => {
               <CardTitle className="text-sm text-primary font-semibold">Download Theft Cases</CardTitle>
             </CardHeader>
             <CardContent className="px-4 pb-4 space-y-3">
-              <ModifiedDataDownload variant="theft" startDate={theftStart} endDate={theftEnd} onStartDateChange={setTheftStart} onEndDateChange={setTheftEnd} onFiltersChange={setTheftFilters} />
+              <TheftDataDownload startDate={theftStart} endDate={theftEnd} onStartDateChange={setTheftStart} onEndDateChange={setTheftEnd} onFiltersChange={setTheftFilters} />
               <SummaryDialog variant="theft" />
               <Button variant="outline" size="sm" onClick={displayTheft} className="w-full h-8 text-xs border-primary/30 hover:bg-primary/10 hover:text-primary">
                 Display Theft Cases
