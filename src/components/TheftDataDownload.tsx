@@ -129,6 +129,7 @@ const TheftDataDownload = ({ startDate: startDateProp, endDate: endDateProp, onS
 
         const sLoad = r.S_Load || r["S Load"] || r.S_load || r["Sanctioned Load"] || "";
         const cLoad = r["C/Load"] || r["C Load"] || r.C_Load || r["Connected Load"] || "";
+        const feederName = r["Feeder Number"] || r.Feeder_Number || r.feeder_number || r["Feeder Name"] || "";
         const reportingOfficer = r["Name of Reporting officer"] || r["Name of Reporting Officer"] || r["Reporting officer"] || r["Reporting Officer Name"] || "";
         const reportingDate = r["Reporting Date"] || r.Reporting_Date || r.reporting_date || "";
         const paymentDate = r["Payment_Date"] || r.payment_date || r.Payment_date || "";
@@ -140,13 +141,14 @@ const TheftDataDownload = ({ startDate: startDateProp, endDate: endDateProp, onS
           Reference: r.Reference || "",
           "Sub Division": r["Sub Division"] || "",
           Batch: r.Batch || "",
+          "Feeder Number": feederName,
+          Status: r.Status || "",
           Tariff: r.Tariff || "",
           Name: r.Name || "",
           Father: r.Father || "",
           Address: r.Address || "",
           ARREAR: r.ARREAR || "",
           AGE: r.AGE || "",
-          Status: r.Status || "",
           "S_Load": sLoad,
           "C/Load": cLoad,
           "Name of Reporting officer": reportingOfficer,
