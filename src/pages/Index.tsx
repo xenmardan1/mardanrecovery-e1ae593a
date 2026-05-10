@@ -28,6 +28,7 @@ const Index = () => {
   const [selectedRecord, setSelectedRecord] = useState<Record<string, any> | null>(null);
   const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState<Filters>({});
+  const [theftFilters, setTheftFilters] = useState<Filters>({});
   const [minArrear, setMinArrear] = useState(0);
   const [sortKey, setSortKey] = useState<string | null>(null);
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
@@ -176,7 +177,7 @@ const Index = () => {
     window.open(`https://www.google.com/maps?q=${lat},${lng}`, "_blank");
   };
 
-  const displayByColumn = useCallback(async (column: string, label: string, startDate?: string, endDate?: string, applyFilters: boolean = false) => {
+  const displayByColumn = useCallback(async (column: string, label: string, startDate?: string, endDate?: string, applyFilters: boolean = false, filtersToUse?: Filters) => {
     setLoading(true);
     setRecords([]);
     setSelectedRecord(null);
@@ -185,6 +186,8 @@ const Index = () => {
     const pageSize = 1000;
     let allData: Record<string, any>[] = [];
     let from = 0;
+    const activeFilters = filtersToUse !== undefined ? filtersToUse : filters;
+
     while (true) {
       let q = supabase
         .from(TABLE_NAME)
@@ -195,7 +198,7 @@ const Index = () => {
       if (endDate) q = q.lte(column, endDate);
 
       if (applyFilters) {
-        Object.entries(filters).forEach(([key, vals]) => {
+        Object.entries(activeFilters).forEach(([key, vals]) => {
           if (vals && vals.length > 0) {
             q = q.in(key, vals);
           }
@@ -219,8 +222,8 @@ const Index = () => {
     setLoading(false);
   }, [filters]);
 
-  const displayModified = useCallback(() => displayByColumn("Payment_Date", "recovery cases", recoveryStart, recoveryEnd, true), [displayByColumn, recoveryStart, recoveryEnd]);
-  const displayTheft = useCallback(() => displayByColumn("Reporting Date", "theft cases", theftStart, theftEnd, true), [displayByColumn, theftStart, theftEnd]);
+  const displayModified = useCallback(() => displayByColumn("Payment_Date", "recovery cases", recoveryStart, recoveryEnd, true, filters), [displayByColumn, recoveryStart, recoveryEnd, filters]);
+  const displayTheft = useCallback(() => displayByColumn("Reporting Date", "theft cases", theftStart, theftEnd, true, theftFilters), [displayByColumn, theftStart, theftEnd, theftFilters]);
 
   const downloadExcel = useCallback(async () => {
     toast.info("Fetching filtered records…");
@@ -399,7 +402,7 @@ const Index = () => {
               <CardTitle className="text-sm text-primary font-semibold">Download Theft Cases</CardTitle>
             </CardHeader>
             <CardContent className="px-4 pb-4 space-y-3">
-              <ModifiedDataDownload variant="theft" startDate={theftStart} endDate={theftEnd} onStartDateChange={setTheftStart} onEndDateChange={setTheftEnd} />
+              <ModifiedDataDownload variant="theft" startDate={theftStart} endDate={theftEnd} onStartDateChange={setTheftStart} onEndDateChange={setTheftEnd} onFiltersChange={setTheftFilters} />
               <SummaryDialog variant="theft" />
               <Button variant="outline" size="sm" onClick={displayTheft} className="w-full h-8 text-xs border-primary/30 hover:bg-primary/10 hover:text-primary">
                 Display Theft Cases

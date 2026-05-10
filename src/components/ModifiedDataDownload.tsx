@@ -18,8 +18,9 @@ interface Props {
   endDate?: string;
   onStartDateChange?: (v: string) => void;
   onEndDateChange?: (v: string) => void;
+  onFiltersChange?: (filters: Filters) => void;
 }
-const ModifiedDataDownload = ({ variant = "recovery", startDate: startDateProp, endDate: endDateProp, onStartDateChange, onEndDateChange }: Props) => {
+const ModifiedDataDownload = ({ variant = "recovery", startDate: startDateProp, endDate: endDateProp, onStartDateChange, onEndDateChange, onFiltersChange }: Props) => {
   const isTheft = variant === "theft";
   const dateColumn = isTheft ? "Reporting Date" : "Payment_Date";
   const [startDateLocal, setStartDateLocal] = useState("");
@@ -221,7 +222,13 @@ const ModifiedDataDownload = ({ variant = "recovery", startDate: startDateProp, 
         </div>
       </div>
 
-      <FilterBar filters={filters} onFiltersChange={setFilters} />
+      <FilterBar
+        filters={filters}
+        onFiltersChange={(newFilters) => {
+          setFilters(newFilters);
+          if (onFiltersChange) onFiltersChange(newFilters);
+        }}
+      />
 
       {progress && (
         <p className="text-xs text-muted-foreground text-center">{progress}</p>
