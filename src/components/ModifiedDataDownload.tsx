@@ -18,8 +18,9 @@ interface Props {
   endDate?: string;
   onStartDateChange?: (v: string) => void;
   onEndDateChange?: (v: string) => void;
+  onFiltersChange?: (filters: Filters) => void;
 }
-const ModifiedDataDownload = ({ variant = "recovery", startDate: startDateProp, endDate: endDateProp, onStartDateChange, onEndDateChange }: Props) => {
+const ModifiedDataDownload = ({ variant = "recovery", startDate: startDateProp, endDate: endDateProp, onStartDateChange, onEndDateChange, onFiltersChange }: Props) => {
   const isTheft = variant === "theft";
   const dateColumn = isTheft ? "Reporting Date" : "Payment_Date";
   const [startDateLocal, setStartDateLocal] = useState("");
@@ -88,32 +89,62 @@ const ModifiedDataDownload = ({ variant = "recovery", startDate: startDateProp, 
       for (let i = 0; i < allData.length; i++) {
         const r = allData[i];
         const ref = r.Reference;
-        const fileName = `${ref}.jpg`;
-        const { data: urlData } = supabase.storage
-          .from(BUCKET)
-          .getPublicUrl(fileName);
-        const publicUrl = urlData?.publicUrl || "";
 
         setProgress(`Downloading image ${i + 1}/${allData.length}...`);
 
-        // Try to fetch the image
         let imageDownloaded = false;
+        let fileName = "";
+
+        // Try to download image from storage
         try {
-          const resp = await fetch(publicUrl);
-          if (resp.ok) {
-            const blob = await resp.blob();
-            picturesFolder.file(fileName, blob);
+          const jpgFileName = `${ref}.jpg`;
+          const { data: jpgBlob, error: jpgError } = await supabase.storage
+            .from(BUCKET)
+            .download(jpgFileName);
+
+          if (!jpgError && jpgBlob) {
+            fileName = jpgFileName;
+            picturesFolder.file(fileName, jpgBlob);
             imageDownloaded = true;
             imgCount++;
+          } else {
+            // Try PNG if JPG doesn't exist
+            const pngFileName = `${ref}.png`;
+            const { data: pngBlob, error: pngError } = await supabase.storage
+              .from(BUCKET)
+              .download(pngFileName);
+
+            if (!pngError && pngBlob) {
+              fileName = pngFileName;
+              picturesFolder.file(fileName, pngBlob);
+              imageDownloaded = true;
+              imgCount++;
+            }
           }
         } catch {
           // skip failed image
         }
 
+        const { data: urlData } = supabase.storage
+          .from(BUCKET)
+          .getPublicUrl(`${ref}.jpg`);
+        const publicUrl = urlData?.publicUrl || "";
+
         rows.push({
-          ...r,
-          "Picture File": imageDownloaded ? `Pictures/${fileName}` : "",
-          "Picture Link": publicUrl,
+          Reference: r.Reference || "",
+          "Sub Division": r["Sub Division"] || "",
+          Batch: r.Batch || "",
+          Tariff: r.Tariff || "",
+          Name: r.Name || "",
+          Father: r.Father || "",
+          Address: r.Address || "",
+          ARREAR: r.ARREAR || "",
+          AGE: r.AGE || "",
+          Status: r.Status || "",
+          payment: r.payment || "",
+          Payment_Date: r.Payment_Date || "",
+          "payment mode": r["payment mode"] || r.Payment_Mode || r["Payment Mode"] || "",
+          "Picture File": imageDownloaded && fileName ? `Pictures/${fileName}` : "",
         });
       }
 
@@ -136,18 +167,6 @@ const ModifiedDataDownload = ({ variant = "recovery", startDate: startDateProp, 
           const cell = ws[addr];
           if (cell && cell.v) {
             cell.l = { Target: cell.v, Tooltip: "Open Picture" };
-          }
-        }
-      }
-
-      // Make Picture Link column a web hyperlink
-      const linkCol = headers.indexOf("Picture Link");
-      if (linkCol >= 0) {
-        for (let r = 1; r <= range.e.r; r++) {
-          const addr = XLSX.utils.encode_cell({ r, c: linkCol });
-          const cell = ws[addr];
-          if (cell && cell.v) {
-            cell.l = { Target: cell.v, Tooltip: "Open Online" };
           }
         }
       }
@@ -203,7 +222,13 @@ const ModifiedDataDownload = ({ variant = "recovery", startDate: startDateProp, 
         </div>
       </div>
 
-      <FilterBar filters={filters} onFiltersChange={setFilters} />
+      <FilterBar
+        filters={filters}
+        onFiltersChange={(newFilters) => {
+          setFilters(newFilters);
+          if (onFiltersChange) onFiltersChange(newFilters);
+        }}
+      />
 
       {progress && (
         <p className="text-xs text-muted-foreground text-center">{progress}</p>

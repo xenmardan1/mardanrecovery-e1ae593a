@@ -9,46 +9,28 @@ import { toast } from "sonner";
 import pescoLogo from "@/assets/pesco-logo.png";
 import ThemeToggle from "@/components/ThemeToggle";
 
-type AuthMode = "login" | "signup" | "verify";
+type AuthMode = "login" | "signup";
 
 const Auth = () => {
   const navigate = useNavigate();
   const [mode, setMode] = useState<AuthMode>("login");
-  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [verificationCode, setVerificationCode] = useState("");
   const [loading, setLoading] = useState(false);
-  const [sessionId, setSessionId] = useState("");
-
-  const formatPhoneNumber = (input: string) => {
-    let digits = input.replace(/\D/g, "");
-    if (digits.startsWith("92")) {
-      digits = digits.slice(2);
-    }
-    if (digits.length > 10) {
-      digits = digits.slice(0, 10);
-    }
-    return digits;
-  };
-
-  const getPakistaniPhone = () => {
-    const formatted = formatPhoneNumber(phone);
-    return `+92${formatted}`;
-  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!phone) {
-      toast.error("Please enter your mobile number");
+    if (!email || !password) {
+      toast.error("Please enter your email and password");
       return;
     }
 
     setLoading(true);
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: `${formatPhoneNumber(phone)}@pesco.local`,
-        password: password,
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
       });
 
       if (error) {
@@ -67,7 +49,7 @@ const Auth = () => {
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!phone || !password || !confirmPassword) {
+    if (!email || !password || !confirmPassword) {
       toast.error("Please fill in all fields");
       return;
     }
@@ -84,17 +66,9 @@ const Auth = () => {
 
     setLoading(true);
     try {
-      const email = `${formatPhoneNumber(phone)}@pesco.local`;
-
-      const { data, error } = await supabase.auth.signUp({
-        email: email,
-        password: password,
-        options: {
-          data: {
-            phone_number: getPakistaniPhone(),
-            display_name: `User ${formatPhoneNumber(phone)}`,
-          },
-        },
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
       });
 
       if (error) {
@@ -122,7 +96,7 @@ const Auth = () => {
           <div className="flex justify-center">
             <img src={pescoLogo} alt="PESCO" className="h-16 w-auto" />
           </div>
-          <CardTitle className="text-2xl font-bold text-white">PESCO Arrear Recovery</CardTitle>
+          <CardTitle className="text-2xl font-bold text-white">PESCO MARDAN CIRCLE RECOVERY AND ANTI THEFT PORTAL</CardTitle>
           <CardDescription className="text-slate-400">
             {mode === "login" && "Sign in to your account"}
             {mode === "signup" && "Create a new account"}
@@ -132,22 +106,17 @@ const Auth = () => {
         <CardContent>
           <form onSubmit={mode === "login" ? handleLogin : handleSignup} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="phone" className="text-slate-300">
-                Mobile Number
+              <Label htmlFor="email" className="text-slate-300">
+                Email Address
               </Label>
-              <div className="flex items-center gap-2 bg-slate-700/50 rounded-lg border border-slate-600 px-3">
-                <span className="text-slate-400 font-medium">+92</span>
-                <Input
-                  id="phone"
-                  type="tel"
-                  placeholder="300 1234567"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  maxLength="15"
-                  className="border-0 bg-transparent text-white placeholder:text-slate-500 focus-visible:ring-0"
-                />
-              </div>
-              <p className="text-xs text-slate-500">Enter 10-digit mobile number (without country code)</p>
+              <Input
+                id="email"
+                type="email"
+                placeholder="your@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="bg-slate-700/50 border-slate-600 text-white placeholder:text-slate-500"
+              />
             </div>
 
             <div className="space-y-2">
@@ -196,7 +165,7 @@ const Auth = () => {
                 <button
                   onClick={() => {
                     setMode("signup");
-                    setPhone("");
+                    setEmail("");
                     setPassword("");
                     setConfirmPassword("");
                   }}
@@ -211,7 +180,7 @@ const Auth = () => {
                 <button
                   onClick={() => {
                     setMode("login");
-                    setPhone("");
+                    setEmail("");
                     setPassword("");
                     setConfirmPassword("");
                   }}
