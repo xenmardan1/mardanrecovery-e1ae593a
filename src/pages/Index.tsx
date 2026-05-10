@@ -459,7 +459,7 @@ const Index = () => {
                 </table>
               </div>
               <div className="mt-3">
-                <DisplayedDataDownload records={sortedRecords} title="Recovery Cases" />
+                <DisplayedDataDownload records={sortedRecords} title="Recovery Cases" isRecovery={true} />
               </div>
             </CardContent>
           </Card>

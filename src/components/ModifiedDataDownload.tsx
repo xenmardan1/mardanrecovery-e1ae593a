@@ -88,31 +88,50 @@ const ModifiedDataDownload = ({ variant = "recovery", startDate: startDateProp, 
       for (let i = 0; i < allData.length; i++) {
         const r = allData[i];
         const ref = r.Reference;
-        const fileName = `${ref}.jpg`;
-        const { data: urlData } = supabase.storage
-          .from(BUCKET)
-          .getPublicUrl(fileName);
-        const publicUrl = urlData?.publicUrl || "";
 
         setProgress(`Downloading image ${i + 1}/${allData.length}...`);
 
-        // Try to fetch the image
         let imageDownloaded = false;
+        let fileName = "";
+
+        // Try to download image from storage
         try {
-          const resp = await fetch(publicUrl);
-          if (resp.ok) {
-            const blob = await resp.blob();
-            picturesFolder.file(fileName, blob);
+          const jpgFileName = `${ref}.jpg`;
+          const { data: jpgBlob, error: jpgError } = await supabase.storage
+            .from(BUCKET)
+            .download(jpgFileName);
+
+          if (!jpgError && jpgBlob) {
+            fileName = jpgFileName;
+            picturesFolder.file(fileName, jpgBlob);
             imageDownloaded = true;
             imgCount++;
+          } else {
+            // Try PNG if JPG doesn't exist
+            const pngFileName = `${ref}.png`;
+            const { data: pngBlob, error: pngError } = await supabase.storage
+              .from(BUCKET)
+              .download(pngFileName);
+
+            if (!pngError && pngBlob) {
+              fileName = pngFileName;
+              picturesFolder.file(fileName, pngBlob);
+              imageDownloaded = true;
+              imgCount++;
+            }
           }
         } catch {
           // skip failed image
         }
 
+        const { data: urlData } = supabase.storage
+          .from(BUCKET)
+          .getPublicUrl(`${ref}.jpg`);
+        const publicUrl = urlData?.publicUrl || "";
+
         rows.push({
           ...r,
-          "Picture File": imageDownloaded ? `Pictures/${fileName}` : "",
+          "Picture File": imageDownloaded && fileName ? `Pictures/${fileName}` : "",
           "Picture Link": publicUrl,
         });
       }
