@@ -43,11 +43,11 @@ const TheftDataDownload = ({ startDate: startDateProp, endDate: endDateProp, onS
         let query = supabase
           .from(TABLE_NAME)
           .select("*")
-          .not("Payment_Date", "is", null)
-          .neq("Payment_Date", "");
+          .not("Reporting Date", "is", null)
+          .neq("Reporting Date", "");
 
-        if (startDate) query = query.gte("Payment_Date", startDate);
-        if (endDate) query = query.lte("Payment_Date", endDate);
+        if (startDate) query = query.gte("Reporting Date", startDate);
+        if (endDate) query = query.lte("Reporting Date", endDate);
 
         // Apply theft-specific filters
         Object.entries(filters).forEach(([key, vals]) => {
@@ -69,12 +69,6 @@ const TheftDataDownload = ({ startDate: startDateProp, endDate: endDateProp, onS
         if (data.length < pageSize) break;
         from += pageSize;
       }
-
-      // Filter out records with null Reporting Date on client side
-      allData = allData.filter(record => {
-        const reportingDate = record["Reporting Date"] || record.Reporting_Date || record.reporting_date || record["Reporting_Date"];
-        return reportingDate !== null && reportingDate !== undefined && reportingDate !== "";
-      });
 
       if (allData.length === 0) {
         toast.error("No theft cases found");
