@@ -241,9 +241,7 @@ const Index = () => {
         .from(TABLE_NAME)
         .select("*")
         .not("Payment_Date", "is", null)
-        .neq("Payment_Date", "")
-        .not("Reporting Date", "is", null)
-        .neq("Reporting Date", "");
+        .neq("Payment_Date", "");
 
       if (theftStart) q = q.gte("Payment_Date", theftStart);
       if (theftEnd) q = q.lte("Payment_Date", theftEnd);
@@ -267,9 +265,16 @@ const Index = () => {
       if (data.length < pageSize) break;
       from += pageSize;
     }
-    setRecords(allData);
-    if (allData.length === 0) toast.info("No theft cases found");
-    else toast.success(`Found ${allData.length} theft cases`);
+
+    // Filter out records with null Reporting Date
+    const filtered = allData.filter(record => {
+      const reportingDate = record["Reporting Date"] || record.Reporting_Date || record.reporting_date || record["Reporting_Date"];
+      return reportingDate !== null && reportingDate !== undefined && reportingDate !== "";
+    });
+
+    setRecords(filtered);
+    if (filtered.length === 0) toast.info("No theft cases found");
+    else toast.success(`Found ${filtered.length} theft cases`);
     setLoading(false);
   }, [theftStart, theftEnd, theftFilters]);
 
