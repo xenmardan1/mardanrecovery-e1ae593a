@@ -524,21 +524,21 @@ const Index = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="px-4 pb-4">
-              <div className="max-h-96 overflow-auto rounded-md border border-border">
-                <table className="w-full text-xs">
+              <div className="max-h-96 overflow-auto rounded-md border border-border" style={{ overflowX: 'auto' }}>
+                <table className="w-full text-xs border-collapse">
                   <thead className="bg-muted/70 sticky top-0 divide-x divide-border">
                     <tr className="text-left">
-                      <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("Reference")}>Reference<SortIcon col="Reference" /></th>
-                      <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("Sub Division")}>Sub Division<SortIcon col="Sub Division" /></th>
-                      <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("Name")}>Name<SortIcon col="Name" /></th>
-                      <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("Father")}>Father<SortIcon col="Father" /></th>
-                      <th className="px-2 py-1.5 font-semibold text-foreground text-right cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("S_Load")}>S_Load<SortIcon col="S_Load" /></th>
-                      <th className="px-2 py-1.5 font-semibold text-foreground text-right cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("C/Load")}>C/Load<SortIcon col="C/Load" /></th>
-                      <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("Name of Reporting officer")}>Name of Reporting Officer<SortIcon col="Name of Reporting officer" /></th>
-                      <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("Reporting Date")}>Reporting Date<SortIcon col="Reporting Date" /></th>
-                      <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted" onClick={() => toggleSort("Method")}>Method<SortIcon col="Method" /></th>
-                      <th className="px-2 py-1.5 font-semibold text-foreground">Theft Pic</th>
-                      <th className="px-2 py-1.5 font-semibold text-foreground">Media</th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted whitespace-nowrap min-w-fit" onClick={() => toggleSort("Reference")}>Reference<SortIcon col="Reference" /></th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted whitespace-nowrap min-w-fit" onClick={() => toggleSort("Sub Division")}>Sub Division<SortIcon col="Sub Division" /></th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted whitespace-nowrap min-w-fit" onClick={() => toggleSort("Name")}>Name<SortIcon col="Name" /></th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted whitespace-nowrap min-w-fit" onClick={() => toggleSort("Father")}>Father<SortIcon col="Father" /></th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground text-right cursor-pointer select-none hover:bg-muted whitespace-nowrap min-w-fit" onClick={() => toggleSort("S_Load")}>S_Load<SortIcon col="S_Load" /></th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground text-right cursor-pointer select-none hover:bg-muted whitespace-nowrap min-w-fit" onClick={() => toggleSort("C/Load")}>C/Load<SortIcon col="C/Load" /></th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted whitespace-nowrap min-w-fit" onClick={() => toggleSort("Name of Reporting officer")}>Name of Reporting Officer<SortIcon col="Name of Reporting officer" /></th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted whitespace-nowrap min-w-fit" onClick={() => toggleSort("Reporting Date")}>Reporting Date<SortIcon col="Reporting Date" /></th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted whitespace-nowrap min-w-fit" onClick={() => toggleSort("Method")}>Method<SortIcon col="Method" /></th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground whitespace-nowrap min-w-fit">Theft Pic</th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground whitespace-nowrap min-w-fit">Media</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border">
@@ -551,23 +551,23 @@ const Index = () => {
                           onClick={() => setSelectedRecord(r)}
                           className="cursor-pointer divide-x divide-border hover:bg-primary/10 transition-colors"
                         >
-                          <td className="px-2 py-1.5 font-medium text-foreground whitespace-nowrap">{r.Reference}</td>
-                          <td className="px-2 py-1.5 text-muted-foreground whitespace-nowrap">{r["Sub Division"] ?? "—"}</td>
-                          <td className="px-2 py-1.5 text-muted-foreground truncate max-w-[140px]">{r.Name ?? "—"}</td>
-                          <td className="px-2 py-1.5 text-muted-foreground whitespace-nowrap">{r.Father ?? "—"}</td>
-                          <td className="px-2 py-1.5 text-foreground text-right whitespace-nowrap">{r.S_Load ?? "—"}</td>
-                          <td className="px-2 py-1.5 text-foreground text-right whitespace-nowrap">{r["C/Load"] ?? "—"}</td>
-                          <td className="px-2 py-1.5 text-muted-foreground whitespace-nowrap">{r["Name of Reporting officer"] ?? "—"}</td>
-                          <td className="px-2 py-1.5 text-muted-foreground whitespace-nowrap">{r["Reporting Date"] ?? "—"}</td>
-                          <td className="px-2 py-1.5 text-muted-foreground whitespace-nowrap">{r.Method ?? "—"}</td>
-                          <td className="px-2 py-1.5" onClick={(e) => e.stopPropagation()}>
+                          <td className="px-2 py-1.5 font-medium text-foreground whitespace-nowrap min-w-fit">{r.Reference}</td>
+                          <td className="px-2 py-1.5 text-muted-foreground whitespace-nowrap min-w-fit">{r["Sub Division"] ?? "—"}</td>
+                          <td className="px-2 py-1.5 text-muted-foreground truncate max-w-[100px]">{r.Name ?? "—"}</td>
+                          <td className="px-2 py-1.5 text-muted-foreground whitespace-nowrap min-w-fit">{r.Father ?? "—"}</td>
+                          <td className="px-2 py-1.5 text-foreground text-right whitespace-nowrap min-w-fit">{r.S_Load ?? "—"}</td>
+                          <td className="px-2 py-1.5 text-foreground text-right whitespace-nowrap min-w-fit">{r["C/Load"] ?? "—"}</td>
+                          <td className="px-2 py-1.5 text-muted-foreground whitespace-nowrap min-w-fit">{r["Name of Reporting officer"] ?? "—"}</td>
+                          <td className="px-2 py-1.5 text-muted-foreground whitespace-nowrap min-w-fit">{r["Reporting Date"] ?? "—"}</td>
+                          <td className="px-2 py-1.5 text-muted-foreground whitespace-nowrap min-w-fit">{r.Method ?? "—"}</td>
+                          <td className="px-2 py-1.5 min-w-fit" onClick={(e) => e.stopPropagation()}>
                             {theftPic ? (
                               <a href={theftPic} target="_blank" rel="noopener noreferrer">
                                 <img src={theftPic} alt="theft" className="h-10 w-10 object-cover rounded" onError={(e) => ((e.target as HTMLImageElement).style.display = "none")} />
                               </a>
                             ) : "—"}
                           </td>
-                          <td className="px-2 py-1.5" onClick={(e) => e.stopPropagation()}>
+                          <td className="px-2 py-1.5 min-w-fit" onClick={(e) => e.stopPropagation()}>
                             {media ? (
                               <a href={media} target="_blank" rel="noopener noreferrer" className="text-primary underline">View</a>
                             ) : "—"}
