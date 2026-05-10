@@ -44,7 +44,9 @@ const TheftDataDownload = ({ startDate: startDateProp, endDate: endDateProp, onS
           .from(TABLE_NAME)
           .select("*")
           .not("Payment_Date", "is", null)
-          .neq("Payment_Date", "");
+          .neq("Payment_Date", "")
+          .not("Reporting Date", "is", null)
+          .neq("Reporting Date", "");
 
         if (startDate) query = query.gte("Payment_Date", startDate);
         if (endDate) query = query.lte("Payment_Date", endDate);

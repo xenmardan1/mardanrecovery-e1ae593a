@@ -241,7 +241,9 @@ const Index = () => {
         .from(TABLE_NAME)
         .select("*")
         .not("Payment_Date", "is", null)
-        .neq("Payment_Date", "");
+        .neq("Payment_Date", "")
+        .not("Reporting Date", "is", null)
+        .neq("Reporting Date", "");
 
       if (theftStart) q = q.gte("Payment_Date", theftStart);
       if (theftEnd) q = q.lte("Payment_Date", theftEnd);
