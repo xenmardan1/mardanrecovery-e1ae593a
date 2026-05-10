@@ -543,8 +543,14 @@ const Index = () => {
                   </thead>
                   <tbody className="divide-y divide-border">
                     {sortedRecords.map((r, i) => {
-                      const theftPic = r["Theft Pic"] || r["Theft_Pic"];
-                      const media = r.media || r.Media;
+                      const sLoad = r.S_Load || r["S Load"] || r.S_load || r["Sanctioned Load"] || "";
+                      const cLoad = r["C/Load"] || r["C Load"] || r.C_Load || r["Connected Load"] || "";
+                      const reportingOfficer = r["Name of Reporting officer"] || r["Name of Reporting Officer"] || r["Reporting officer"] || r["Reporting Officer Name"] || "";
+                      const reportingDate = r["Reporting Date"] || r.Reporting_Date || r.reporting_date || "";
+                      const method = r.Method || r.method || "";
+                      const theftPic = r["Theft Pic"] || r["Theft_Pic"] || r.theft_pic || r.Theft_Picture || r["Theft Picture"] || "";
+                      const media = r.media || r.Media || r.attachment || r.Attachment || "";
+
                       return (
                         <tr
                           key={i}
@@ -555,11 +561,11 @@ const Index = () => {
                           <td className="px-2 py-1.5 text-muted-foreground whitespace-nowrap min-w-fit">{r["Sub Division"] ?? "—"}</td>
                           <td className="px-2 py-1.5 text-muted-foreground truncate max-w-[100px]">{r.Name ?? "—"}</td>
                           <td className="px-2 py-1.5 text-muted-foreground whitespace-nowrap min-w-fit">{r.Father ?? "—"}</td>
-                          <td className="px-2 py-1.5 text-foreground text-right whitespace-nowrap min-w-fit">{r.S_Load ?? "—"}</td>
-                          <td className="px-2 py-1.5 text-foreground text-right whitespace-nowrap min-w-fit">{r["C/Load"] ?? "—"}</td>
-                          <td className="px-2 py-1.5 text-muted-foreground whitespace-nowrap min-w-fit">{r["Name of Reporting officer"] ?? "—"}</td>
-                          <td className="px-2 py-1.5 text-muted-foreground whitespace-nowrap min-w-fit">{r["Reporting Date"] ?? "—"}</td>
-                          <td className="px-2 py-1.5 text-muted-foreground whitespace-nowrap min-w-fit">{r.Method ?? "—"}</td>
+                          <td className="px-2 py-1.5 text-foreground text-right whitespace-nowrap min-w-fit">{sLoad || "—"}</td>
+                          <td className="px-2 py-1.5 text-foreground text-right whitespace-nowrap min-w-fit">{cLoad || "—"}</td>
+                          <td className="px-2 py-1.5 text-muted-foreground whitespace-nowrap min-w-fit">{reportingOfficer || "—"}</td>
+                          <td className="px-2 py-1.5 text-muted-foreground whitespace-nowrap min-w-fit">{reportingDate || "—"}</td>
+                          <td className="px-2 py-1.5 text-muted-foreground whitespace-nowrap min-w-fit">{method || "—"}</td>
                           <td className="px-2 py-1.5 min-w-fit" onClick={(e) => e.stopPropagation()}>
                             {theftPic ? (
                               <a href={theftPic} target="_blank" rel="noopener noreferrer">

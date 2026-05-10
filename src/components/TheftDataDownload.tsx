@@ -128,6 +128,15 @@ const TheftDataDownload = ({ startDate: startDateProp, endDate: endDateProp, onS
           .getPublicUrl(`${ref}.jpg`);
         const publicUrl = urlData?.publicUrl || "";
 
+        const sLoad = r.S_Load || r["S Load"] || r.S_load || r["Sanctioned Load"] || "";
+        const cLoad = r["C/Load"] || r["C Load"] || r.C_Load || r["Connected Load"] || "";
+        const reportingOfficer = r["Name of Reporting officer"] || r["Name of Reporting Officer"] || r["Reporting officer"] || r["Reporting Officer Name"] || "";
+        const reportingDate = r["Reporting Date"] || r.Reporting_Date || r.reporting_date || "";
+        const paymentDate = r["Payment_Date"] || r.payment_date || r.Payment_date || "";
+        const method = r.Method || r.method || "";
+        const theftPic = r["Theft Pic"] || r["Theft_Pic"] || r.theft_pic || r.Theft_Picture || r["Theft Picture"] || "";
+        const media = r.media || r.Media || r.attachment || r.Attachment || "";
+
         rows.push({
           Reference: r.Reference || "",
           "Sub Division": r["Sub Division"] || "",
@@ -139,14 +148,14 @@ const TheftDataDownload = ({ startDate: startDateProp, endDate: endDateProp, onS
           ARREAR: r.ARREAR || "",
           AGE: r.AGE || "",
           Status: r.Status || "",
-          "S_Load": r.S_Load || "",
-          "C/Load": r["C/Load"] || "",
-          "Name of Reporting officer": r["Name of Reporting officer"] || "",
-          "Reporting Date": r["Reporting Date"] || "",
-          "Payment Date": r["Payment_Date"] || "",
-          Method: r.Method || "",
-          "Theft Pic": r["Theft Pic"] || r["Theft_Pic"] || "",
-          Media: r.media || r.Media || "",
+          "S_Load": sLoad,
+          "C/Load": cLoad,
+          "Name of Reporting officer": reportingOfficer,
+          "Reporting Date": reportingDate,
+          "Payment Date": paymentDate,
+          Method: method,
+          "Theft Pic": theftPic,
+          Media: media,
           "Picture File": imageDownloaded && fileName ? `Pictures/${fileName}` : "",
         });
       }
