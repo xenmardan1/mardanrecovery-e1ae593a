@@ -240,11 +240,10 @@ const Index = () => {
       let q = supabase
         .from(TABLE_NAME)
         .select("*")
-        .not("Reporting Date", "is", null)
-        .neq("Reporting Date", "");
+        .not("Reporting Date", "is", null);
 
-      if (theftStart) q = q.gte("Reporting Date", theftStart);
-      if (theftEnd) q = q.lte("Reporting Date", theftEnd);
+      if (theftStart && theftStart.trim()) q = q.gte("Reporting Date", theftStart);
+      if (theftEnd && theftEnd.trim()) q = q.lte("Reporting Date", theftEnd);
 
       if (Object.keys(theftFilters).length > 0) {
         Object.entries(theftFilters).forEach(([key, vals]) => {

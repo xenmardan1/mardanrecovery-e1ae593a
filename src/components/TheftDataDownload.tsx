@@ -43,11 +43,10 @@ const TheftDataDownload = ({ startDate: startDateProp, endDate: endDateProp, onS
         let query = supabase
           .from(TABLE_NAME)
           .select("*")
-          .not("Reporting Date", "is", null)
-          .neq("Reporting Date", "");
+          .not("Reporting Date", "is", null);
 
-        if (startDate) query = query.gte("Reporting Date", startDate);
-        if (endDate) query = query.lte("Reporting Date", endDate);
+        if (startDate && startDate.trim()) query = query.gte("Reporting Date", startDate);
+        if (endDate && endDate.trim()) query = query.lte("Reporting Date", endDate);
 
         // Apply theft-specific filters
         Object.entries(filters).forEach(([key, vals]) => {
