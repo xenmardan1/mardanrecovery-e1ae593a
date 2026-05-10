@@ -28,6 +28,7 @@ const Index = () => {
   const [selectedRecord, setSelectedRecord] = useState<Record<string, any> | null>(null);
   const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState<Filters>({});
+  const [theftFilters, setTheftFilters] = useState<Filters>({});
   const [minArrear, setMinArrear] = useState(0);
   const [sortKey, setSortKey] = useState<string | null>(null);
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
@@ -176,7 +177,7 @@ const Index = () => {
     window.open(`https://www.google.com/maps?q=${lat},${lng}`, "_blank");
   };
 
-  const displayByColumn = useCallback(async (column: string, label: string, startDate?: string, endDate?: string) => {
+  const displayByColumn = useCallback(async (column: string, label: string, startDate?: string, endDate?: string, applyFilters: boolean = false, filtersToUse?: Filters) => {
     setLoading(true);
     setRecords([]);
     setSelectedRecord(null);
@@ -185,13 +186,25 @@ const Index = () => {
     const pageSize = 1000;
     let allData: Record<string, any>[] = [];
     let from = 0;
+    const activeFilters = filtersToUse !== undefined ? filtersToUse : filters;
+
     while (true) {
       let q = supabase
         .from(TABLE_NAME)
         .select("*")
-        .not(column, "is", null);
+        .not(column, "is", null)
+        .neq(column, "");
       if (startDate) q = q.gte(column, startDate);
       if (endDate) q = q.lte(column, endDate);
+
+      if (applyFilters) {
+        Object.entries(activeFilters).forEach(([key, vals]) => {
+          if (vals && vals.length > 0) {
+            q = q.in(key, vals);
+          }
+        });
+      }
+
       const { data, error } = await q.range(from, from + pageSize - 1);
       if (error) {
         toast.error("Fetch failed: " + error.message);
@@ -207,10 +220,10 @@ const Index = () => {
     if (allData.length === 0) toast.info(`No ${label} found`);
     else toast.success(`Found ${allData.length} ${label}`);
     setLoading(false);
-  }, []);
+  }, [filters]);
 
-  const displayModified = useCallback(() => displayByColumn("payment", "recovery cases", recoveryStart, recoveryEnd), [displayByColumn, recoveryStart, recoveryEnd]);
-  const displayTheft = useCallback(() => displayByColumn("Reporting Date", "theft cases", theftStart, theftEnd), [displayByColumn, theftStart, theftEnd]);
+  const displayModified = useCallback(() => displayByColumn("Payment_Date", "recovery cases", recoveryStart, recoveryEnd, true, filters), [displayByColumn, recoveryStart, recoveryEnd, filters]);
+  const displayTheft = useCallback(() => displayByColumn("Reporting Date", "theft cases", theftStart, theftEnd, true, theftFilters), [displayByColumn, theftStart, theftEnd, theftFilters]);
 
   const downloadExcel = useCallback(async () => {
     toast.info("Fetching filtered records…");
@@ -274,6 +287,24 @@ const Index = () => {
     <div className="min-h-screen flex flex-col bg-background transition-colors duration-300">
       <header className="header-gradient sticky top-0 z-10 shadow-lg">
         <div className="px-4 py-4 relative">
+          <div className="absolute top-4 left-4">
+            {view !== "home" && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setView("home");
+                  setRecords([]);
+                  setSelectedRecord(null);
+                  setFilters({});
+                  setSortKey(null);
+                }}
+                className="text-white hover:bg-white/20 h-8 px-2 text-xs"
+              >
+                <ArrowLeft className="mr-1 h-3.5 w-3.5" /> Back
+              </Button>
+            )}
+          </div>
           <div className="absolute top-4 right-4 flex gap-2">
             <ThemeToggle />
             <Button
@@ -334,22 +365,6 @@ const Index = () => {
           </div>
         )}
 
-        {view !== "home" && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              setView("home");
-              setRecords([]);
-              setSelectedRecord(null);
-              setFilters({});
-              setSortKey(null);
-            }}
-            className="h-8 text-xs border-primary/30 hover:bg-primary/10 hover:text-primary"
-          >
-            <ArrowLeft className="mr-1 h-3.5 w-3.5" /> Back to Home
-          </Button>
-        )}
 
         {view === "arrears" && !selectedRecord && (
           <Card className="shadow-md border-0 bg-card/80 backdrop-blur-sm">
@@ -387,7 +402,7 @@ const Index = () => {
               <CardTitle className="text-sm text-primary font-semibold">Download Theft Cases</CardTitle>
             </CardHeader>
             <CardContent className="px-4 pb-4 space-y-3">
-              <ModifiedDataDownload variant="theft" startDate={theftStart} endDate={theftEnd} onStartDateChange={setTheftStart} onEndDateChange={setTheftEnd} />
+              <ModifiedDataDownload variant="theft" startDate={theftStart} endDate={theftEnd} onStartDateChange={setTheftStart} onEndDateChange={setTheftEnd} onFiltersChange={setTheftFilters} />
               <SummaryDialog variant="theft" />
               <Button variant="outline" size="sm" onClick={displayTheft} className="w-full h-8 text-xs border-primary/30 hover:bg-primary/10 hover:text-primary">
                 Display Theft Cases
@@ -449,7 +464,7 @@ const Index = () => {
                 </table>
               </div>
               <div className="mt-3">
-                <DisplayedDataDownload records={sortedRecords} title="Recovery Cases" />
+                <DisplayedDataDownload records={sortedRecords} title="Recovery Cases" isRecovery={true} />
               </div>
             </CardContent>
           </Card>

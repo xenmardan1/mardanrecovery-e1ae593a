@@ -45,6 +45,20 @@ const FilterBar = ({ filters, onFiltersChange, minArrear = 0, onMinArrearChange 
     onFiltersChange(newFilters);
   };
 
+  const toggleAllValues = (key: string) => {
+    const items = getOptionsFor(key);
+    const current = filters[key] || [];
+    const allSelected = current.length === items.length;
+
+    const newFilters = { ...filters };
+    if (allSelected) {
+      delete newFilters[key];
+    } else {
+      newFilters[key] = items;
+    }
+    onFiltersChange(newFilters);
+  };
+
   const toggleExpand = (key: string) => {
     setExpanded((prev) => ({ ...prev, [key]: !prev[key] }));
   };
@@ -116,19 +130,29 @@ const FilterBar = ({ filters, onFiltersChange, minArrear = 0, onMinArrearChange 
                   {items.length === 0 ? (
                     <p className="text-xs text-muted-foreground py-1">No options</p>
                   ) : (
-                    items.map((opt) => (
-                      <label
-                        key={opt}
-                        className="flex items-center gap-2 text-xs cursor-pointer py-0.5"
-                      >
+                    <>
+                      <label className="flex items-center gap-2 text-xs cursor-pointer py-0.5 border-b pb-1">
                         <Checkbox
-                          checked={selected.includes(opt)}
-                          onCheckedChange={() => toggleValue(col.key, opt)}
+                          checked={selected.length === items.length && items.length > 0}
+                          onCheckedChange={() => toggleAllValues(col.key)}
                           className="h-3.5 w-3.5"
                         />
-                        <span className="text-foreground truncate">{opt}</span>
+                        <span className="text-foreground font-semibold">All</span>
                       </label>
-                    ))
+                      {items.map((opt) => (
+                        <label
+                          key={opt}
+                          className="flex items-center gap-2 text-xs cursor-pointer py-0.5"
+                        >
+                          <Checkbox
+                            checked={selected.includes(opt)}
+                            onCheckedChange={() => toggleValue(col.key, opt)}
+                            className="h-3.5 w-3.5"
+                          />
+                          <span className="text-foreground truncate">{opt}</span>
+                        </label>
+                      ))}
+                    </>
                   )}
                 </div>
               )}
