@@ -176,7 +176,7 @@ const Index = () => {
     window.open(`https://www.google.com/maps?q=${lat},${lng}`, "_blank");
   };
 
-  const displayByColumn = useCallback(async (column: string, label: string, startDate?: string, endDate?: string) => {
+  const displayByColumn = useCallback(async (column: string, label: string, startDate?: string, endDate?: string, applyFilters: boolean = false) => {
     setLoading(true);
     setRecords([]);
     setSelectedRecord(null);
@@ -189,9 +189,19 @@ const Index = () => {
       let q = supabase
         .from(TABLE_NAME)
         .select("*")
-        .not(column, "is", null);
+        .not(column, "is", null)
+        .neq(column, "");
       if (startDate) q = q.gte(column, startDate);
       if (endDate) q = q.lte(column, endDate);
+
+      if (applyFilters) {
+        Object.entries(filters).forEach(([key, vals]) => {
+          if (vals && vals.length > 0) {
+            q = q.in(key, vals);
+          }
+        });
+      }
+
       const { data, error } = await q.range(from, from + pageSize - 1);
       if (error) {
         toast.error("Fetch failed: " + error.message);
@@ -207,10 +217,10 @@ const Index = () => {
     if (allData.length === 0) toast.info(`No ${label} found`);
     else toast.success(`Found ${allData.length} ${label}`);
     setLoading(false);
-  }, []);
+  }, [filters]);
 
-  const displayModified = useCallback(() => displayByColumn("payment", "recovery cases", recoveryStart, recoveryEnd), [displayByColumn, recoveryStart, recoveryEnd]);
-  const displayTheft = useCallback(() => displayByColumn("Reporting Date", "theft cases", theftStart, theftEnd), [displayByColumn, theftStart, theftEnd]);
+  const displayModified = useCallback(() => displayByColumn("Payment_Date", "recovery cases", recoveryStart, recoveryEnd, true), [displayByColumn, recoveryStart, recoveryEnd]);
+  const displayTheft = useCallback(() => displayByColumn("Reporting Date", "theft cases", theftStart, theftEnd, true), [displayByColumn, theftStart, theftEnd]);
 
   const downloadExcel = useCallback(async () => {
     toast.info("Fetching filtered records…");
