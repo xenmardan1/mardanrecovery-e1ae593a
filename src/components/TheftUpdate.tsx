@@ -74,7 +74,9 @@ const TheftUpdate = ({ record, onUpdated }: Props) => {
 
   const isReportingDateFilledInDb = !!record["Reporting Date"];
   const areTheftFieldsFilled = !!(cLoad && method && reportingDate && officer);
-  const isTheftButtonDisabled = isReportingDateFilledInDb || !areTheftFieldsFilled;
+  const isTheftPictureSelected = !!theftPicFile;
+  const isTheftButtonDisabled = isReportingDateFilledInDb || !areTheftFieldsFilled || !isTheftPictureSelected;
+  const areAllTheftFieldsDisabled = isReportingDateFilledInDb;
 
   const handleSave = async () => {
     setSaving(true);
@@ -127,12 +129,17 @@ const TheftUpdate = ({ record, onUpdated }: Props) => {
     <div className="space-y-3">
       <div className="space-y-1">
         <Label className="text-xs">C/Load</Label>
-        <Input value={cLoad} onChange={(e) => setCLoad(e.target.value)} placeholder="Enter connected load" />
+        <Input
+          value={cLoad}
+          onChange={(e) => setCLoad(e.target.value)}
+          placeholder="Enter connected load"
+          disabled={areAllTheftFieldsDisabled}
+        />
       </div>
 
       <div className="space-y-1">
         <Label className="text-xs">Method</Label>
-        <Select value={method} onValueChange={setMethod}>
+        <Select value={method} onValueChange={setMethod} disabled={areAllTheftFieldsDisabled}>
           <SelectTrigger>
             <SelectValue placeholder="Select method" />
           </SelectTrigger>
@@ -152,6 +159,7 @@ const TheftUpdate = ({ record, onUpdated }: Props) => {
           <PopoverTrigger asChild>
             <Button
               variant="outline"
+              disabled={areAllTheftFieldsDisabled}
               className={cn(
                 "w-full justify-start text-left font-normal",
                 !reportingDate && "text-muted-foreground"
@@ -177,7 +185,12 @@ const TheftUpdate = ({ record, onUpdated }: Props) => {
 
       <div className="space-y-1">
         <Label className="text-xs">Name of Reporting officer</Label>
-        <Input value={officer} onChange={(e) => setOfficer(e.target.value)} placeholder="Officer name" />
+        <Input
+          value={officer}
+          onChange={(e) => setOfficer(e.target.value)}
+          placeholder="Officer name"
+          disabled={areAllTheftFieldsDisabled}
+        />
       </div>
 
       <div className="space-y-1">
@@ -189,6 +202,7 @@ const TheftUpdate = ({ record, onUpdated }: Props) => {
               type="file"
               accept="image/*"
               onChange={(e) => setTheftPicFile(e.target.files?.[0] ?? null)}
+              disabled={areAllTheftFieldsDisabled}
               className="text-sm"
             />
           </div>
@@ -205,6 +219,7 @@ const TheftUpdate = ({ record, onUpdated }: Props) => {
             <Button
               type="button"
               variant="outline"
+              disabled={areAllTheftFieldsDisabled}
               className="w-full"
               onClick={() => theftCamRef.current?.click()}
             >
@@ -237,6 +252,7 @@ const TheftUpdate = ({ record, onUpdated }: Props) => {
               type="file"
               accept="image/*,video/*"
               onChange={(e) => setMediaFile(e.target.files?.[0] ?? null)}
+              disabled={areAllTheftFieldsDisabled}
               className="text-sm"
             />
           </div>
@@ -253,6 +269,7 @@ const TheftUpdate = ({ record, onUpdated }: Props) => {
             <Button
               type="button"
               variant="outline"
+              disabled={areAllTheftFieldsDisabled}
               className="w-full"
               onClick={() => mediaCamRef.current?.click()}
             >
@@ -317,7 +334,7 @@ const TheftUpdate = ({ record, onUpdated }: Props) => {
         onClick={handleSave}
         disabled={saving || isTheftButtonDisabled}
         className="w-full"
-        title={isReportingDateFilledInDb ? "Reporting Date already filled in database" : !areTheftFieldsFilled ? "Please fill all theft fields" : ""}
+        title={isReportingDateFilledInDb ? "Reporting Date already filled in database" : !areTheftFieldsFilled ? "Please fill all theft fields" : !isTheftPictureSelected ? "Please select a theft picture" : ""}
       >
         <Save className="mr-2 h-4 w-4" />
         {saving ? "Saving..." : isReportingDateFilledInDb ? "Theft Already Saved" : "Save Theft Details"}
