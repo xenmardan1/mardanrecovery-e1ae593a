@@ -73,7 +73,8 @@ const PaymentAndUpload = ({ record, onUpdated }: Props) => {
 
   const isPaymentDateFilledInDb = !!record.Payment_Date;
   const arePaymentFieldsFilled = !!(payment && paymentMode && paymentDate);
-  const isPaymentButtonDisabled = isPaymentDateFilledInDb || !arePaymentFieldsFilled;
+  const isPictureSelected = !!file;
+  const isPaymentButtonDisabled = isPaymentDateFilledInDb || !arePaymentFieldsFilled || !isPictureSelected;
   const areAllFieldsDisabled = isPaymentDateFilledInDb;
 
   const handleSave = async () => {
@@ -279,7 +280,7 @@ const PaymentAndUpload = ({ record, onUpdated }: Props) => {
         onClick={handleSave}
         disabled={saving || isPaymentButtonDisabled}
         className="w-full"
-        title={isPaymentDateFilledInDb ? "Payment Date already filled in database" : !arePaymentFieldsFilled ? "Please fill all payment fields" : ""}
+        title={isPaymentDateFilledInDb ? "Payment Date already filled in database" : !arePaymentFieldsFilled ? "Please fill all payment fields" : !isPictureSelected ? "Please choose or take a picture" : ""}
       >
         <Save className="mr-2 h-4 w-4" />
         {saving ? "Saving..." : isPaymentDateFilledInDb ? "Payment Already Saved" : "Save All"}
