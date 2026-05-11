@@ -32,6 +32,7 @@ const ModifiedDataDownload = ({ variant = "recovery", startDate: startDateProp, 
   const [downloading, setDownloading] = useState(false);
   const [progress, setProgress] = useState("");
   const [filters, setFilters] = useState<Filters>({});
+  const [minArrear, setMinArrear] = useState(0);
 
   const handleDownload = async () => {
     setDownloading(true);
@@ -57,6 +58,10 @@ const ModifiedDataDownload = ({ variant = "recovery", startDate: startDateProp, 
             query = query.in(key, vals);
           }
         });
+
+        if (minArrear > 0) {
+          query = query.gte("ARREAR", minArrear);
+        }
 
         const { data, error } = await query.range(from, from + pageSize - 1);
 
@@ -228,6 +233,8 @@ const ModifiedDataDownload = ({ variant = "recovery", startDate: startDateProp, 
           setFilters(newFilters);
           if (onFiltersChange) onFiltersChange(newFilters);
         }}
+        minArrear={minArrear}
+        onMinArrearChange={setMinArrear}
       />
 
       {progress && (
