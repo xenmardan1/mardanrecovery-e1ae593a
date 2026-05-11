@@ -74,6 +74,7 @@ const PaymentAndUpload = ({ record, onUpdated }: Props) => {
   const isPaymentDateFilledInDb = !!record.Payment_Date;
   const arePaymentFieldsFilled = !!(payment && paymentMode && paymentDate);
   const isPaymentButtonDisabled = isPaymentDateFilledInDb || !arePaymentFieldsFilled;
+  const areAllFieldsDisabled = isPaymentDateFilledInDb;
 
   const handleSave = async () => {
     setSaving(true);
@@ -134,11 +135,12 @@ const PaymentAndUpload = ({ record, onUpdated }: Props) => {
             placeholder="Enter amount"
             value={payment}
             onChange={(e) => setPayment(e.target.value)}
+            disabled={areAllFieldsDisabled}
           />
         </div>
         <div className="space-y-1">
           <Label className="text-xs">Payment Mode</Label>
-          <Select value={paymentMode} onValueChange={setPaymentMode}>
+          <Select value={paymentMode} onValueChange={setPaymentMode} disabled={areAllFieldsDisabled}>
             <SelectTrigger>
               <SelectValue placeholder="Select mode" />
             </SelectTrigger>
@@ -154,6 +156,7 @@ const PaymentAndUpload = ({ record, onUpdated }: Props) => {
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
+                disabled={areAllFieldsDisabled}
                 className={cn(
                   "w-full justify-start text-left font-normal",
                   !paymentDate && "text-muted-foreground"
@@ -185,6 +188,7 @@ const PaymentAndUpload = ({ record, onUpdated }: Props) => {
                 type="file"
                 accept="image/*"
                 onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+                disabled={areAllFieldsDisabled}
                 className="text-sm"
               />
             </div>
@@ -201,6 +205,7 @@ const PaymentAndUpload = ({ record, onUpdated }: Props) => {
               <Button
                 type="button"
                 variant="outline"
+                disabled={areAllFieldsDisabled}
                 className="w-full"
                 onClick={() => camRef.current?.click()}
               >
