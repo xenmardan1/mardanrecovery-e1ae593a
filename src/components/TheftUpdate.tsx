@@ -144,11 +144,15 @@ const TheftUpdate = ({ record, onUpdated }: Props) => {
             <SelectValue placeholder="Select method" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="Direct">Direct</SelectItem>
-            <SelectItem value="Bypass">Bypass</SelectItem>
-            <SelectItem value="Tampered Meter">Tampered Meter</SelectItem>
-            <SelectItem value="Reverse">Reverse</SelectItem>
-            <SelectItem value="Other">Other</SelectItem>
+            <SelectItem value="Direct Connection">Direct Connection</SelectItem>
+            <SelectItem value="PC Meter Tampered/cut">PC Meter Tampered/cut</SelectItem>
+            <SelectItem value="Static Body Tampered">Static Body Tampered</SelectItem>
+            <SelectItem value="Hole in Meter">Hole in Meter</SelectItem>
+            <SelectItem value="Display Washed">Display Washed</SelectItem>
+            <SelectItem value="Static Meter Display Open">Static Meter Display Open</SelectItem>
+            <SelectItem value="Loop System">Loop System</SelectItem>
+            <SelectItem value="Meter Externally Shunted">Meter Externally Shunted</SelectItem>
+            <SelectItem value="PVC Shunted">PVC Shunted</SelectItem>
           </SelectContent>
         </Select>
       </div>
