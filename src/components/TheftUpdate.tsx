@@ -74,7 +74,8 @@ const TheftUpdate = ({ record, onUpdated }: Props) => {
 
   const isReportingDateFilledInDb = !!record["Reporting Date"];
   const areTheftFieldsFilled = !!(cLoad && method && reportingDate && officer);
-  const isTheftButtonDisabled = isReportingDateFilledInDb || !areTheftFieldsFilled;
+  const isTheftPictureSelected = !!theftPicFile;
+  const isTheftButtonDisabled = isReportingDateFilledInDb || !areTheftFieldsFilled || !isTheftPictureSelected;
   const areAllTheftFieldsDisabled = isReportingDateFilledInDb;
 
   const handleSave = async () => {
@@ -333,7 +334,7 @@ const TheftUpdate = ({ record, onUpdated }: Props) => {
         onClick={handleSave}
         disabled={saving || isTheftButtonDisabled}
         className="w-full"
-        title={isReportingDateFilledInDb ? "Reporting Date already filled in database" : !areTheftFieldsFilled ? "Please fill all theft fields" : ""}
+        title={isReportingDateFilledInDb ? "Reporting Date already filled in database" : !areTheftFieldsFilled ? "Please fill all theft fields" : !isTheftPictureSelected ? "Please select a theft picture" : ""}
       >
         <Save className="mr-2 h-4 w-4" />
         {saving ? "Saving..." : isReportingDateFilledInDb ? "Theft Already Saved" : "Save Theft Details"}
