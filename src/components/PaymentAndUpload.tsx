@@ -56,13 +56,16 @@ const PaymentAndUpload = ({ record, onUpdated }: Props) => {
           .getPublicUrl(`${record.Reference}.${ext}`);
         if (!data?.publicUrl) continue;
         try {
-          const res = await fetch(data.publicUrl, { method: "HEAD" });
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 5000);
+          const res = await fetch(data.publicUrl, { method: "HEAD", signal: controller.signal });
+          clearTimeout(timeoutId);
           if (res.ok) {
             if (!cancelled) setImageUrl(data.publicUrl);
             return;
           }
-        } catch {
-          // try next
+        } catch (err) {
+          // Network error or timeout, try next extension
         }
       }
     })();
@@ -127,7 +130,7 @@ const PaymentAndUpload = ({ record, onUpdated }: Props) => {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 form-3d">
       <div className="grid grid-cols-1 gap-3">
         <div className="space-y-1">
           <Label className="text-xs">Payment Amount</Label>
@@ -137,6 +140,7 @@ const PaymentAndUpload = ({ record, onUpdated }: Props) => {
             value={payment}
             onChange={(e) => setPayment(e.target.value)}
             disabled={areAllFieldsDisabled}
+            className="input-3d"
           />
         </div>
         <div className="space-y-1">
@@ -190,7 +194,7 @@ const PaymentAndUpload = ({ record, onUpdated }: Props) => {
                 accept="image/*"
                 onChange={(e) => setFile(e.target.files?.[0] ?? null)}
                 disabled={areAllFieldsDisabled}
-                className="text-sm"
+                className="text-sm input-3d"
               />
             </div>
             <div className="space-y-1">
@@ -279,7 +283,7 @@ const PaymentAndUpload = ({ record, onUpdated }: Props) => {
       <Button
         onClick={handleSave}
         disabled={saving || isPaymentButtonDisabled}
-        className="w-full"
+        className="w-full button-3d"
         title={isPaymentDateFilledInDb ? "Payment Date already filled in database" : !arePaymentFieldsFilled ? "Please fill all payment fields" : !isPictureSelected ? "Please choose or take a picture" : ""}
       >
         <Save className="mr-2 h-4 w-4" />

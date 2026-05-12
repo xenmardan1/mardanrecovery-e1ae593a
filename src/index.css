@@ -171,4 +171,39 @@
   .header-gradient {
     background: var(--header-gradient);
   }
+
+  /* 3D Form Effects */
+  .form-3d {
+    perspective: 1000px;
+    transform-style: preserve-3d;
+  }
+
+  .card-3d {
+    @apply shadow-lg transition-all duration-300;
+    transform-style: preserve-3d;
+  }
+
+  .card-3d:hover {
+    @apply shadow-2xl -translate-y-1;
+  }
+
+  .input-3d {
+    @apply shadow-md transition-all duration-200 hover:shadow-lg;
+  }
+
+  .input-3d:focus {
+    @apply shadow-lg;
+  }
+
+  .button-3d {
+    @apply shadow-md transition-all duration-200;
+  }
+
+  .button-3d:hover:not(:disabled) {
+    @apply shadow-lg -translate-y-0.5;
+  }
+
+  .button-3d:active:not(:disabled) {
+    @apply shadow-sm translate-y-0.5;
+  }
 }

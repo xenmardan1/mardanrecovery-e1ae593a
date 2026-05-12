@@ -22,12 +22,12 @@ const SearchBar = ({ onSearch, loading }: SearchBarProps) => {
         placeholder="Enter Reference number..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        className="flex-1"
+        className="flex-1 input-3d"
         type="text"
         inputMode="numeric"
         pattern="[0-9]*"
       />
-      <Button type="submit" disabled={loading}>
+      <Button type="submit" disabled={loading} className="button-3d">
         <Search className="mr-2 h-4 w-4" />
         {loading ? "Searching..." : "Search"}
       </Button>

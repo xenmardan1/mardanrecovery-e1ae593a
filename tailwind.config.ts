@@ -85,6 +85,11 @@ export default {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+      boxShadow: {
+        "3d": "0 10px 20px -5px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+        "3d-lg": "0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+        "3d-inset": "inset 0 2px 4px 0 rgba(255, 255, 255, 0.05)",
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],
