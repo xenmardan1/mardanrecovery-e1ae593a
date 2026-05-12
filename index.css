@@ -1,0 +1,209 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* ===== Royal Blue (default) ===== */
+  .theme-blue:root, :root {
+    --background: 210 20% 98%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 214 32% 91%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 214 95% 93%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 217 91% 60%;
+    --radius: 0.75rem;
+    --header-gradient: linear-gradient(135deg, hsl(217 91% 60%), hsl(230 80% 55%));
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .theme-blue.dark, .dark {
+    --background: 222 47% 6%;
+    --foreground: 210 40% 98%;
+    --card: 222 47% 9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 47% 9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 217 33% 17%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217 33% 17%;
+    --input: 217 33% 17%;
+    --ring: 217 91% 60%;
+    --header-gradient: linear-gradient(135deg, hsl(217 70% 35%), hsl(230 60% 30%));
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  /* ===== Emerald ===== */
+  .theme-emerald {
+    --primary: 160 84% 39%;
+    --primary-foreground: 0 0% 100%;
+    --accent: 160 84% 93%;
+    --accent-foreground: 160 84% 15%;
+    --ring: 160 84% 39%;
+    --header-gradient: linear-gradient(135deg, hsl(160 84% 39%), hsl(170 70% 35%));
+  }
+  .theme-emerald.dark {
+    --primary: 160 84% 45%;
+    --primary-foreground: 0 0% 100%;
+    --accent: 160 40% 17%;
+    --accent-foreground: 160 84% 90%;
+    --ring: 160 84% 45%;
+    --header-gradient: linear-gradient(135deg, hsl(160 60% 28%), hsl(170 50% 22%));
+  }
+
+  /* ===== Sunset Orange ===== */
+  .theme-orange {
+    --primary: 25 95% 53%;
+    --primary-foreground: 0 0% 100%;
+    --accent: 25 95% 92%;
+    --accent-foreground: 25 95% 20%;
+    --ring: 25 95% 53%;
+    --header-gradient: linear-gradient(135deg, hsl(25 95% 53%), hsl(15 90% 48%));
+  }
+  .theme-orange.dark {
+    --primary: 25 95% 55%;
+    --primary-foreground: 0 0% 100%;
+    --accent: 25 40% 17%;
+    --accent-foreground: 25 95% 90%;
+    --ring: 25 95% 55%;
+    --header-gradient: linear-gradient(135deg, hsl(25 70% 35%), hsl(15 60% 30%));
+  }
+
+  /* ===== Rose ===== */
+  .theme-rose {
+    --primary: 350 89% 60%;
+    --primary-foreground: 0 0% 100%;
+    --accent: 350 89% 93%;
+    --accent-foreground: 350 89% 20%;
+    --ring: 350 89% 60%;
+    --header-gradient: linear-gradient(135deg, hsl(350 89% 60%), hsl(340 80% 55%));
+  }
+  .theme-rose.dark {
+    --primary: 350 89% 60%;
+    --primary-foreground: 0 0% 100%;
+    --accent: 350 40% 17%;
+    --accent-foreground: 350 89% 90%;
+    --ring: 350 89% 60%;
+    --header-gradient: linear-gradient(135deg, hsl(350 60% 35%), hsl(340 50% 30%));
+  }
+
+  /* ===== Violet ===== */
+  .theme-violet {
+    --primary: 263 70% 50%;
+    --primary-foreground: 0 0% 100%;
+    --accent: 263 70% 93%;
+    --accent-foreground: 263 70% 20%;
+    --ring: 263 70% 50%;
+    --header-gradient: linear-gradient(135deg, hsl(263 70% 50%), hsl(280 60% 45%));
+  }
+  .theme-violet.dark {
+    --primary: 263 70% 55%;
+    --primary-foreground: 0 0% 100%;
+    --accent: 263 35% 17%;
+    --accent-foreground: 263 70% 90%;
+    --ring: 263 70% 55%;
+    --header-gradient: linear-gradient(135deg, hsl(263 50% 32%), hsl(280 40% 28%));
+  }
+
+  /* ===== Teal ===== */
+  .theme-teal {
+    --primary: 173 80% 40%;
+    --primary-foreground: 0 0% 100%;
+    --accent: 173 80% 93%;
+    --accent-foreground: 173 80% 15%;
+    --ring: 173 80% 40%;
+    --header-gradient: linear-gradient(135deg, hsl(173 80% 40%), hsl(185 70% 35%));
+  }
+  .theme-teal.dark {
+    --primary: 173 80% 45%;
+    --primary-foreground: 0 0% 100%;
+    --accent: 173 35% 17%;
+    --accent-foreground: 173 80% 90%;
+    --ring: 173 80% 45%;
+    --header-gradient: linear-gradient(135deg, hsl(173 55% 28%), hsl(185 45% 22%));
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .header-gradient {
+    background: var(--header-gradient);
+  }
+
+  /* 3D Form Effects */
+  .form-3d {
+    perspective: 1000px;
+    transform-style: preserve-3d;
+  }
+
+  .card-3d {
+    @apply shadow-lg transition-all duration-300;
+    transform-style: preserve-3d;
+  }
+
+  .card-3d:hover {
+    @apply shadow-2xl -translate-y-1;
+  }
+
+  .input-3d {
+    @apply shadow-md transition-all duration-200 hover:shadow-lg;
+  }
+
+  .input-3d:focus {
+    @apply shadow-lg;
+  }
+
+  .button-3d {
+    @apply shadow-md transition-all duration-200;
+  }
+
+  .button-3d:hover:not(:disabled) {
+    @apply shadow-lg -translate-y-0.5;
+  }
+
+  .button-3d:active:not(:disabled) {
+    @apply shadow-sm translate-y-0.5;
+  }
+}
