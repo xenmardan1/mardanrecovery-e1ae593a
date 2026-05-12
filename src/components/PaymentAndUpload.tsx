@@ -58,7 +58,7 @@ const PaymentAndUpload = ({ record, onUpdated }: Props) => {
         try {
           const controller = new AbortController();
           const timeoutId = setTimeout(() => controller.abort(), 5000);
-          const res = await fetch(data.publicUrl, { method: "HEAD", signal: controller.signal });
+          const res = await fetch(data.publicUrl, { signal: controller.signal });
           clearTimeout(timeoutId);
           if (res.ok) {
             if (!cancelled) setImageUrl(data.publicUrl);
