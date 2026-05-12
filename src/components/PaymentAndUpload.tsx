@@ -56,13 +56,16 @@ const PaymentAndUpload = ({ record, onUpdated }: Props) => {
           .getPublicUrl(`${record.Reference}.${ext}`);
         if (!data?.publicUrl) continue;
         try {
-          const res = await fetch(data.publicUrl, { method: "HEAD" });
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 5000);
+          const res = await fetch(data.publicUrl, { method: "HEAD", signal: controller.signal });
+          clearTimeout(timeoutId);
           if (res.ok) {
             if (!cancelled) setImageUrl(data.publicUrl);
             return;
           }
-        } catch {
-          // try next
+        } catch (err) {
+          // Network error or timeout, try next extension
         }
       }
     })();
