@@ -368,7 +368,7 @@ const Index = () => {
               <img src={pescoLogo} alt="PESCO Logo" className="h-full w-full rounded-full object-contain" />
             </div>
             <h1 className="text-lg font-bold text-white drop-shadow-sm">
-              PESCO MARDAN CIRCLE RECOVERY APPLICATION
+              PESCO MARDAN CIRCLE RECOVERY AND THEFT UPDATION APPLICATION
             </h1>
             <p className="text-xs text-white/80 mt-1">
               Search by Reference or filter by columns
@@ -397,16 +397,6 @@ const Index = () => {
             <Button variant="outline" className="w-full h-10 text-sm border-primary/30 hover:bg-primary/10 hover:text-primary" onClick={() => setView("theft")}>
               <Download className="mr-2 h-4 w-4" />
               Download Theft Cases
-            </Button>
-            <Button
-              variant="outline"
-              className="w-full h-10 text-sm border-primary/30 hover:bg-primary/10 hover:text-primary"
-              onClick={() => {
-                toast.info("Search a Reference above to update theft details");
-                document.querySelector('input')?.focus();
-              }}
-            >
-              Update Theft
             </Button>
           </div>
         )}
