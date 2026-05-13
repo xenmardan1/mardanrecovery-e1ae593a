@@ -401,6 +401,20 @@ const Index = () => {
           </div>
         )}
 
+        {view === "home" && !selectedRecord && records.length === 0 && (
+          <div>
+            <Button
+              variant="outline"
+              className="w-full h-10 text-sm border-primary/30 hover:bg-primary/10 hover:text-primary"
+              onClick={() => {
+                toast.info("Search a Reference above to update theft details");
+                document.querySelector('input')?.focus();
+              }}
+            >
+              Update Theft
+            </Button>
+          </div>
+        )}
 
         {view === "arrears" && !selectedRecord && (
           <Card className="shadow-md border-0 bg-card/80 backdrop-blur-sm">
@@ -420,7 +434,7 @@ const Index = () => {
         {view === "recovery" && !selectedRecord && records.length === 0 && (
           <Card className="shadow-md border-0 bg-card/80 backdrop-blur-sm">
             <CardHeader className="pb-2 px-4 pt-4">
-              <CardTitle className="text-sm text-primary font-semibold">Download Modified Records</CardTitle>
+              <CardTitle className="text-sm text-primary font-semibold">Download Recovery Progress</CardTitle>
             </CardHeader>
             <CardContent className="px-4 pb-4 space-y-3">
               <ModifiedDataDownload startDate={recoveryStart} endDate={recoveryEnd} onStartDateChange={setRecoveryStart} onEndDateChange={setRecoveryEnd} />
