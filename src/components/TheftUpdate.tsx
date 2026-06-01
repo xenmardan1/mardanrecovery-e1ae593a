@@ -235,13 +235,14 @@ const TheftUpdate = ({ record, onUpdated }: Props) => {
           <div className="space-y-1">
             <p className="text-[11px] text-muted-foreground truncate">Selected: {theftPicFile.name}</p>
             {theftPreview && (
-              <button
+              <Button
                 type="button"
                 onClick={() => { setZoom(1); setZoomKind("image"); setZoomSrc(theftPreview); }}
-                className="block w-full rounded-lg overflow-hidden border border-border hover:opacity-90 cursor-zoom-in"
+                variant="outline"
+                className="w-full"
               >
-                <img src={theftPreview} alt="Theft preview" className="w-full h-auto max-h-48 object-cover" />
-              </button>
+                View
+              </Button>
             )}
           </div>
         )}
@@ -284,23 +285,26 @@ const TheftUpdate = ({ record, onUpdated }: Props) => {
         {mediaFile && (
           <div className="space-y-1">
             <p className="text-[11px] text-muted-foreground truncate">Selected: {mediaFile.name}</p>
-            {mediaPreview && (mediaFile.type.startsWith("video") ? (
-              <button
-                type="button"
-                onClick={() => { setZoom(1); setZoomKind("video"); setZoomSrc(mediaPreview); }}
-                className="block w-full rounded-lg overflow-hidden border border-border hover:opacity-90 cursor-zoom-in"
-              >
-                <video src={mediaPreview} className="w-full h-auto max-h-48 object-cover" muted />
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClick={() => { setZoom(1); setZoomKind("image"); setZoomSrc(mediaPreview); }}
-                className="block w-full rounded-lg overflow-hidden border border-border hover:opacity-90 cursor-zoom-in"
-              >
-                <img src={mediaPreview} alt="Media preview" className="w-full h-auto max-h-48 object-cover" />
-              </button>
-            ))}
+            {mediaPreview && (
+              <div className="grid grid-cols-2 gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => { setZoom(1); setZoomKind(mediaFile.type.startsWith("video") ? "video" : "image"); setZoomSrc(mediaPreview); }}
+                >
+                  View
+                </Button>
+                {mediaFile.type.startsWith("video") && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => { setZoom(1); setZoomKind("video"); setZoomSrc(mediaPreview); }}
+                  >
+                    Play
+                  </Button>
+                )}
+              </div>
+            )}
           </div>
         )}
       </div>
