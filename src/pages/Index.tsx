@@ -242,7 +242,7 @@ const Index = () => {
       let q = supabase
         .from(TABLE_NAME)
         .select("*")
-        .not("Reporting Date", "is", null);
+        .not("Method", "is", null);
 
       if (theftStart && theftStart.trim()) q = q.gte("Reporting Date", theftStart);
       if (theftEnd && theftEnd.trim()) q = q.lte("Reporting Date", theftEnd);
