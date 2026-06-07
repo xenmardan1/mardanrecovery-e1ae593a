@@ -572,9 +572,7 @@ const Index = () => {
                           <td className="px-2 py-1.5 text-muted-foreground whitespace-nowrap min-w-fit">{method || "—"}</td>
                           <td className="px-2 py-1.5 min-w-fit" onClick={(e) => e.stopPropagation()}>
                             {theftPic ? (
-                              <a href={theftPic} target="_blank" rel="noopener noreferrer">
-                                <img src={theftPic} alt="theft" className="h-10 w-10 object-cover rounded" onError={(e) => ((e.target as HTMLImageElement).style.display = "none")} />
-                              </a>
+                              <a href={theftPic} target="_blank" rel="noopener noreferrer" className="text-primary underline">View</a>
                             ) : "—"}
                           </td>
                           <td className="px-2 py-1.5 min-w-fit" onClick={(e) => e.stopPropagation()}>
