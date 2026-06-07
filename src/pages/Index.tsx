@@ -16,6 +16,7 @@ import TheftDataDownload from "@/components/TheftDataDownload";
 import DisplayedDataDownload from "@/components/DisplayedDataDownload";
 import SummaryDialog from "@/components/SummaryDialog";
 import TheftFilterBar, { TheftFilters } from "@/components/TheftFilterBar";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "sonner";
 import * as XLSX from "xlsx";
 
@@ -25,6 +26,7 @@ type View = "home" | "arrears" | "recovery" | "theft";
 
 const Index = () => {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const [view, setView] = useState<View>("home");
   const [records, setRecords] = useState<Record<string, any>[]>([]);
   const [selectedRecord, setSelectedRecord] = useState<Record<string, any> | null>(null);
@@ -240,7 +242,7 @@ const Index = () => {
       let q = supabase
         .from(TABLE_NAME)
         .select("*")
-        .not("Reporting Date", "is", null);
+        .not("Method", "is", null);
 
       if (theftStart && theftStart.trim()) q = q.gte("Reporting Date", theftStart);
       if (theftEnd && theftEnd.trim()) q = q.lte("Reporting Date", theftEnd);
@@ -337,7 +339,7 @@ const Index = () => {
             {view !== "home" && (
               <Button
                 variant="ghost"
-                size="sm"
+                size={isMobile ? "icon" : "sm"}
                 onClick={() => {
                   setView("home");
                   setRecords([]);
@@ -345,9 +347,11 @@ const Index = () => {
                   setFilters({});
                   setSortKey(null);
                 }}
-                className="text-white hover:bg-white/20 h-8 px-2 text-xs"
+                className={`text-white hover:bg-white/20 h-8 ${isMobile ? "w-8 p-0" : "px-2"} text-xs md:text-sm`}
+                title="Go back"
               >
-                <ArrowLeft className="mr-1 h-3.5 w-3.5" /> Back
+                <ArrowLeft className={`${isMobile ? "h-5 w-5" : "h-3.5 w-3.5 mr-1"}`} />
+                {!isMobile && <span>Back</span>}
               </Button>
             )}
           </div>
@@ -572,9 +576,7 @@ const Index = () => {
                           <td className="px-2 py-1.5 text-muted-foreground whitespace-nowrap min-w-fit">{method || "—"}</td>
                           <td className="px-2 py-1.5 min-w-fit" onClick={(e) => e.stopPropagation()}>
                             {theftPic ? (
-                              <a href={theftPic} target="_blank" rel="noopener noreferrer">
-                                <img src={theftPic} alt="theft" className="h-10 w-10 object-cover rounded" onError={(e) => ((e.target as HTMLImageElement).style.display = "none")} />
-                              </a>
+                              <a href={theftPic} target="_blank" rel="noopener noreferrer" className="text-primary underline">View</a>
                             ) : "—"}
                           </td>
                           <td className="px-2 py-1.5 min-w-fit" onClick={(e) => e.stopPropagation()}>

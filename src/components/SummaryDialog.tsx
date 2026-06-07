@@ -33,7 +33,7 @@ const SummaryDialog = ({ variant = "recovery" }: Props) => {
       let from = 0;
 
       const selectCols = isTheft
-        ? '"Sub Division", "Reporting Date"'
+        ? '"Sub Division", "Method"'
         : '"Sub Division", payment';
 
       while (true) {
@@ -51,7 +51,7 @@ const SummaryDialog = ({ variant = "recovery" }: Props) => {
 
         for (const r of data as any[]) {
           const sd = String(r["Sub Division"] ?? "Unknown");
-          const flagVal = isTheft ? r["Reporting Date"] : r.payment;
+          const flagVal = isTheft ? r["Method"] : r.payment;
           const isFlagged = flagVal !== null && flagVal !== "" && flagVal !== undefined;
           const cur = counts.get(sd) ?? { total: 0, modified: 0 };
           cur.total += 1;
