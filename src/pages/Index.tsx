@@ -16,6 +16,7 @@ import TheftDataDownload from "@/components/TheftDataDownload";
 import DisplayedDataDownload from "@/components/DisplayedDataDownload";
 import SummaryDialog from "@/components/SummaryDialog";
 import TheftFilterBar, { TheftFilters } from "@/components/TheftFilterBar";
+import TableColumnFilter from "@/components/TableColumnFilter";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "sonner";
 import * as XLSX from "xlsx";
@@ -78,6 +79,17 @@ const Index = () => {
     });
     return copy;
   }, [records, sortKey, sortDir]);
+
+  const theftFilteredRecords = useMemo(() => {
+    if (view !== "theft" || Object.keys(theftFilters).length === 0) return sortedRecords;
+    return sortedRecords.filter((r) => {
+      return Object.entries(theftFilters).every(([key, vals]) => {
+        if (!vals || vals.length === 0) return true;
+        const value = r[key];
+        return vals.includes(String(value || ""));
+      });
+    });
+  }, [sortedRecords, theftFilters, view]);
 
   const SortIcon = ({ col }: { col: string }) => {
     if (sortKey !== col) return <ArrowUpDown className="inline ml-1 h-3 w-3 opacity-50" />;
@@ -528,7 +540,7 @@ const Index = () => {
           <Card className="shadow-md border-0 bg-card/80 backdrop-blur-sm">
             <CardHeader className="pb-2 px-4 pt-4">
               <CardTitle className="text-sm text-primary font-semibold">
-                Results ({records.length})
+                Results ({theftFilteredRecords.length}/{records.length})
               </CardTitle>
             </CardHeader>
             <CardContent className="px-4 pb-4">
@@ -537,7 +549,89 @@ const Index = () => {
                   <thead className="bg-muted/70 sticky top-0 divide-x divide-border">
                     <tr className="text-left">
                       <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted whitespace-nowrap min-w-fit" onClick={() => toggleSort("Reference")}>Reference<SortIcon col="Reference" /></th>
-                      <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted whitespace-nowrap min-w-fit" onClick={() => toggleSort("Sub Division")}>Sub Division<SortIcon col="Sub Division" /></th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted whitespace-nowrap min-w-fit">
+                        <div className="flex items-center gap-1 justify-between">
+                          <span onClick={(e) => {
+                            e.stopPropagation();
+                            toggleSort("Sub Division");
+                          }} className="flex items-center gap-1 cursor-pointer">Sub Division<SortIcon col="Sub Division" /></span>
+                          <TableColumnFilter
+                            columnKey="Sub Division"
+                            columnLabel="Sub Division"
+                            selectedValues={theftFilters["Sub Division"] || []}
+                            onValuesChange={(vals) => {
+                              const newFilters = { ...theftFilters };
+                              if (vals.length === 0) delete newFilters["Sub Division"];
+                              else newFilters["Sub Division"] = vals;
+                              setTheftFilters(newFilters);
+                            }}
+                          />
+                        </div>
+                      </th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground whitespace-nowrap min-w-fit">
+                        <div className="flex items-center gap-1 justify-between">
+                          <span>Batch</span>
+                          <TableColumnFilter
+                            columnKey="Batch"
+                            columnLabel="Batch"
+                            selectedValues={theftFilters["Batch"] || []}
+                            onValuesChange={(vals) => {
+                              const newFilters = { ...theftFilters };
+                              if (vals.length === 0) delete newFilters["Batch"];
+                              else newFilters["Batch"] = vals;
+                              setTheftFilters(newFilters);
+                            }}
+                          />
+                        </div>
+                      </th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground whitespace-nowrap min-w-fit">
+                        <div className="flex items-center gap-1 justify-between">
+                          <span>Tariff</span>
+                          <TableColumnFilter
+                            columnKey="Tariff"
+                            columnLabel="Tariff"
+                            selectedValues={theftFilters["Tariff"] || []}
+                            onValuesChange={(vals) => {
+                              const newFilters = { ...theftFilters };
+                              if (vals.length === 0) delete newFilters["Tariff"];
+                              else newFilters["Tariff"] = vals;
+                              setTheftFilters(newFilters);
+                            }}
+                          />
+                        </div>
+                      </th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground whitespace-nowrap min-w-fit">
+                        <div className="flex items-center gap-1 justify-between">
+                          <span>Feeder Number</span>
+                          <TableColumnFilter
+                            columnKey="Feeder Number"
+                            columnLabel="Feeder Number"
+                            selectedValues={theftFilters["Feeder Number"] || []}
+                            onValuesChange={(vals) => {
+                              const newFilters = { ...theftFilters };
+                              if (vals.length === 0) delete newFilters["Feeder Number"];
+                              else newFilters["Feeder Number"] = vals;
+                              setTheftFilters(newFilters);
+                            }}
+                          />
+                        </div>
+                      </th>
+                      <th className="px-2 py-1.5 font-semibold text-foreground whitespace-nowrap min-w-fit">
+                        <div className="flex items-center gap-1 justify-between">
+                          <span>Status</span>
+                          <TableColumnFilter
+                            columnKey="Status"
+                            columnLabel="Status"
+                            selectedValues={theftFilters["Status"] || []}
+                            onValuesChange={(vals) => {
+                              const newFilters = { ...theftFilters };
+                              if (vals.length === 0) delete newFilters["Status"];
+                              else newFilters["Status"] = vals;
+                              setTheftFilters(newFilters);
+                            }}
+                          />
+                        </div>
+                      </th>
                       <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted whitespace-nowrap min-w-fit" onClick={() => toggleSort("Name")}>Name<SortIcon col="Name" /></th>
                       <th className="px-2 py-1.5 font-semibold text-foreground cursor-pointer select-none hover:bg-muted whitespace-nowrap min-w-fit" onClick={() => toggleSort("Father")}>Father<SortIcon col="Father" /></th>
                       <th className="px-2 py-1.5 font-semibold text-foreground text-right cursor-pointer select-none hover:bg-muted whitespace-nowrap min-w-fit" onClick={() => toggleSort("S_Load")}>S_Load<SortIcon col="S_Load" /></th>
@@ -550,7 +644,7 @@ const Index = () => {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border">
-                    {sortedRecords.map((r, i) => {
+                    {theftFilteredRecords.map((r, i) => {
                       const sLoad = r.S_Load || r["S Load"] || r.S_load || r["Sanctioned Load"] || "";
                       const cLoad = r["C/Load"] || r["C Load"] || r.C_Load || r["Connected Load"] || "";
                       const reportingOfficer = r["Name of Reporting officer"] || r["Name of Reporting Officer"] || r["Reporting officer"] || r["Reporting Officer Name"] || "";
@@ -558,6 +652,10 @@ const Index = () => {
                       const method = r.Method || r.method || "";
                       const theftPic = r["Theft Pic"] || r["Theft_Pic"] || r.theft_pic || r.Theft_Picture || r["Theft Picture"] || "";
                       const media = r.media || r.Media || r.attachment || r.Attachment || "";
+                      const batch = r.Batch || r.batch || "";
+                      const tariff = r.Tariff || r.tariff || "";
+                      const feederNumber = r["Feeder Number"] || r.Feeder_Number || r.feeder_number || "";
+                      const status = r.Status || r.status || "";
 
                       return (
                         <tr
@@ -567,6 +665,10 @@ const Index = () => {
                         >
                           <td className="px-2 py-1.5 font-medium text-foreground whitespace-nowrap min-w-fit">{r.Reference}</td>
                           <td className="px-2 py-1.5 text-muted-foreground whitespace-nowrap min-w-fit">{r["Sub Division"] ?? "—"}</td>
+                          <td className="px-2 py-1.5 text-muted-foreground whitespace-nowrap min-w-fit">{batch || "—"}</td>
+                          <td className="px-2 py-1.5 text-muted-foreground whitespace-nowrap min-w-fit">{tariff || "—"}</td>
+                          <td className="px-2 py-1.5 text-muted-foreground whitespace-nowrap min-w-fit">{feederNumber || "—"}</td>
+                          <td className="px-2 py-1.5 text-muted-foreground whitespace-nowrap min-w-fit">{status || "—"}</td>
                           <td className="px-2 py-1.5 text-muted-foreground truncate max-w-[100px]">{r.Name ?? "—"}</td>
                           <td className="px-2 py-1.5 text-muted-foreground whitespace-nowrap min-w-fit">{r.Father ?? "—"}</td>
                           <td className="px-2 py-1.5 text-foreground text-right whitespace-nowrap min-w-fit">{sLoad || "—"}</td>
@@ -581,7 +683,7 @@ const Index = () => {
                           </td>
                           <td className="px-2 py-1.5 min-w-fit" onClick={(e) => e.stopPropagation()}>
                             {media ? (
-                              <a href={media} target="_blank" rel="noopener noreferrer" className="text-primary underline">View</a>
+                              <a href={media} target="_blank" rel="noopener noreferrer" className="text-primary underline">Play</a>
                             ) : "—"}
                           </td>
                         </tr>
@@ -591,7 +693,7 @@ const Index = () => {
                 </table>
               </div>
               <div className="mt-3">
-                <DisplayedDataDownload records={sortedRecords} title="Theft Cases" />
+                <DisplayedDataDownload records={theftFilteredRecords} title="Theft Cases" />
               </div>
             </CardContent>
           </Card>

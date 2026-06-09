@@ -43,7 +43,7 @@ const TheftDataDownload = ({ startDate: startDateProp, endDate: endDateProp, onS
         let query = supabase
           .from(TABLE_NAME)
           .select("*")
-          .not("Reporting Date", "is", null);
+          .not("Method", "is", null);
 
         if (startDate && startDate.trim()) query = query.gte("Reporting Date", startDate);
         if (endDate && endDate.trim()) query = query.lte("Reporting Date", endDate);
